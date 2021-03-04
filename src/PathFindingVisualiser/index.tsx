@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
 import TypeNode from "../types/Node";
 import Components from "../components";
-import styles from "./index.module.css";
+import "./index.css";
+
+const START_NODE_ROW = 10;
+const START_NODE_COL = 10;
+const END_NODE_ROW = 40;
+const END_NODE_COL = 40;
 
 const createNode = (col: number, row: number) => {
   return {
     col,
     row,
+    isStart: START_NODE_COL === col && START_NODE_ROW === row,
+    isEnd: END_NODE_COL === col && END_NODE_ROW === row,
   };
 };
 
 const getInitialGrid = () => {
   const grid: TypeNode[][] = [];
-  for (let row = 0; row < 20; row++) {
+  for (let row = 0; row < 50; row++) {
     const currentRow = [];
     for (let col = 0; col < 50; col++) {
       currentRow.push(createNode(col, row));
@@ -32,15 +39,14 @@ const PathFindingVisualiser = () => {
   return (
     <>
       <div>
-        <button onClick={() => {}}>Visualize Dijkstra's Algorithm</button>
+        <button onClick={() => {}}>Just do it</button>
       </div>
-      <div className={styles.grid}>
+      <div className="grid">
         {grid?.map((row, rowIndex) => {
           return (
-            <div className={styles.row} key={rowIndex}>
+            <div className="row" key={rowIndex}>
               {row.map((node, nodeIndex) => {
-                const { col, row } = node;
-                return <Components.Node key={nodeIndex} col={col} row={row} />;
+                return <Components.Node key={nodeIndex} nodeObj={node} />;
               })}
             </div>
           );

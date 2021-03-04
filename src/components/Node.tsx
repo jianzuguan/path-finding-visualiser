@@ -1,14 +1,16 @@
-import styles from "./Node.module.css";
+import  "./Node.css";
+import TypeNode from "../types/Node";
 
 interface Props {
-  row: number;
-  col: number;
+  nodeObj: TypeNode;
 }
 
 const Node = (props: Props) => {
-  const { row, col } = props;
+  const { row, col, isStart, isEnd } = props.nodeObj;
 
-  return <div className={styles.node} id={`node-${row}-${col}`}></div>;
+  const colourStyle = isStart ? 'node-start' : isEnd ? 'node-end' : "";
+
+  return <div className={`node ${colourStyle}`} id={`node-${row}-${col}`}></div>;
 };
 
 export default Node;
