@@ -8,12 +8,14 @@ const START_NODE_COL = 10;
 const END_NODE_ROW = 40;
 const END_NODE_COL = 40;
 
-const createNode = (col: number, row: number) => {
+const createNode = (col: number, row: number): TypeNode => {
   return {
     col,
     row,
     isStart: START_NODE_COL === col && START_NODE_ROW === row,
     isEnd: END_NODE_COL === col && END_NODE_ROW === row,
+    weight: 1,
+    distance: Infinity,
   };
 };
 
