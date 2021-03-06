@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TypeNode from "../types/Node";
 import Components from "../components";
+import dijkstra from '../algorithms/dijkstra';
 import "./index.css";
 
 const START_NODE_ROW = 10;
@@ -16,6 +17,8 @@ const createNode = (col: number, row: number): TypeNode => {
     isEnd: END_NODE_COL === col && END_NODE_ROW === row,
     weight: 1,
     distance: Infinity,
+    isVisited: false,
+    previousNode: null,
   };
 };
 
@@ -34,6 +37,14 @@ const getInitialGrid = () => {
 const PathFindingVisualiser = () => {
   const [grid, setGrid] = useState<TypeNode[][]>();
 
+  const visualiseDijkstra = () => {
+    if (grid === undefined) return;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const endNode = grid[END_NODE_ROW][END_NODE_COL];
+    const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
+    console.log(visitedNodesInOrder);
+  };
+
   useEffect(() => {
     const initialGrid = getInitialGrid();
     setGrid(initialGrid);
@@ -41,7 +52,7 @@ const PathFindingVisualiser = () => {
   return (
     <>
       <div>
-        <button onClick={() => {}}>Just do it</button>
+        <button onClick={visualiseDijkstra}>Just do it</button>
       </div>
       <div className="grid">
         {grid?.map((row, rowIndex) => {
