@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import TypeNode from "../types/Node";
 import Components from "../components";
-import dijkstra from "../algorithms/dijkstra";
+import dijkstra, { getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import "./index.css";
 
-const START_NODE_ROW = 10;
-const START_NODE_COL = 10;
+const START_NODE_ROW = 20;
+const START_NODE_COL = 20;
 const END_NODE_ROW = 40;
 const END_NODE_COL = 40;
 
@@ -37,8 +37,35 @@ const getInitialGrid = () => {
 const PathFindingVisualiser = () => {
   const [grid, setGrid] = useState<TypeNode[][]>();
 
-  const animateDijkstra = async (visitedNodesInOrder: TypeNode[]) => {
-    for (let i = 0; i < visitedNodesInOrder.length; i++) {
+  const animateShortestPath = (nodesInShortestPathOrder: TypeNode[]) => {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        if (node === null) {
+          return;
+        }
+        const domElement = document.getElementById(
+          `node-${node.row}-${node.col}`
+        );
+        if (domElement === null) {
+          return;
+        }
+        domElement.className = "node node-shortest-path";
+      }, 50 * i);
+    }
+  };
+
+  const animateDijkstra = async (
+    visitedNodesInOrder: TypeNode[],
+    nodesInShortestPathOrder: TypeNode[]
+  ) => {
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+      if (i === visitedNodesInOrder.length) {
+        setTimeout(() => {
+          animateShortestPath(nodesInShortestPathOrder);
+        }, 10 * i);
+        return;
+      }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
         const domElement = document.getElementById(
@@ -57,7 +84,8 @@ const PathFindingVisualiser = () => {
     const endNode = grid[END_NODE_ROW][END_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
     console.log(visitedNodesInOrder);
-    animateDijkstra(visitedNodesInOrder);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   };
 
   useEffect(() => {

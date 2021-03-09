@@ -26,7 +26,10 @@ const getUnvisitedNeighbors = (node: TypeNode, grid: TypeNode[][]) => {
   return neighbors.filter((neighbor) => !neighbor.isVisited);
 };
 
-const updateUnvisitedNeighbors = (currentNode: TypeNode, grid: TypeNode[][]) => {
+const updateUnvisitedNeighbors = (
+  currentNode: TypeNode,
+  grid: TypeNode[][]
+) => {
   const unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid);
   for (const neighbor of unvisitedNeighbors) {
     neighbor.distance = currentNode.distance + currentNode.weight;
@@ -56,6 +59,16 @@ const dijkstra = (
   }
 
   return visitedNodesInOrder;
+};
+
+export const getNodesInShortestPathOrder = (endNode: TypeNode) => {
+  const nodesInShortestPathOrder = [];
+  let currentNode: TypeNode | null = endNode;
+  while (currentNode !== null) {
+    nodesInShortestPathOrder.unshift(currentNode);
+    currentNode = currentNode.previousNode;
+  }
+  return nodesInShortestPathOrder;
 };
 
 export default dijkstra;

@@ -16,3 +16,7 @@
 .node-visited {
   background-color: chartreuse;
 }
+
+.node-shortest-path {
+  background-color: aquamarine;
+}
