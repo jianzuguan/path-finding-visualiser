@@ -32,8 +32,11 @@ const updateUnvisitedNeighbors = (
 ) => {
   const unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid);
   for (const neighbor of unvisitedNeighbors) {
-    neighbor.distance = currentNode.distance + currentNode.weight;
-    neighbor.previousNode = currentNode;
+    const newDistance= currentNode.distance + neighbor.weight;
+    if (newDistance < neighbor.distance) {
+      neighbor.distance = newDistance;
+      neighbor.previousNode = currentNode;
+    }
   }
 };
 
@@ -42,9 +45,9 @@ const dijkstra = (
   stratNode: TypeNode,
   finishNode: TypeNode
 ) => {
-  const visitedNodesInOrder = [];
-  stratNode.distance = 0;
   const unvisitedNodes = getAllNodes(grid);
+  stratNode.distance = 0;
+  const visitedNodesInOrder = [];
   while (!!unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
     const closestNode = unvisitedNodes.shift();

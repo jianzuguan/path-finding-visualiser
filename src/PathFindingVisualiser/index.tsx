@@ -3,11 +3,12 @@ import TypeNode from "../types/Node";
 import Components from "../components";
 import dijkstra, { getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import "./index.css";
+import { getRandomInt } from "../utils";
 
-const START_NODE_ROW = 20;
-const START_NODE_COL = 20;
-const END_NODE_ROW = 40;
-const END_NODE_COL = 40;
+const START_NODE_ROW = 10;
+const START_NODE_COL = 10;
+const END_NODE_ROW = 30;
+const END_NODE_COL = 30;
 
 const createNode = (col: number, row: number): TypeNode => {
   return {
@@ -15,7 +16,7 @@ const createNode = (col: number, row: number): TypeNode => {
     row,
     isStart: START_NODE_COL === col && START_NODE_ROW === row,
     isEnd: END_NODE_COL === col && END_NODE_ROW === row,
-    weight: 1,
+    weight: getRandomInt(1, 100),
     distance: Infinity,
     isVisited: false,
     previousNode: null,
@@ -24,7 +25,7 @@ const createNode = (col: number, row: number): TypeNode => {
 
 const getInitialGrid = () => {
   const grid: TypeNode[][] = [];
-  for (let row = 0; row < 50; row++) {
+  for (let row = 0; row < 40; row++) {
     const currentRow = [];
     for (let col = 0; col < 50; col++) {
       currentRow.push(createNode(col, row));
@@ -41,7 +42,11 @@ const PathFindingVisualiser = () => {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
-        if (node === null) {
+        if (
+          node === null ||
+          (START_NODE_ROW === node.row && START_NODE_COL === node.col) ||
+          (END_NODE_ROW === node.row && END_NODE_COL === node.col)
+        ) {
           return;
         }
         const domElement = document.getElementById(
@@ -68,6 +73,13 @@ const PathFindingVisualiser = () => {
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
+        if (
+          node === null ||
+          (START_NODE_ROW === node.row && START_NODE_COL === node.col) ||
+          (END_NODE_ROW === node.row && END_NODE_COL === node.col)
+        ) {
+          return;
+        }
         const domElement = document.getElementById(
           `node-${node.row}-${node.col}`
         );
