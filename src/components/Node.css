@@ -12,3 +12,7 @@
 .node-end {
   background-color: crimson;
 }
+
+.node-visited {
+  background-color: chartreuse;
+}

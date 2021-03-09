@@ -54,6 +54,8 @@ const dijkstra = (
     if (closestNode === finishNode) return visitedNodesInOrder;
     updateUnvisitedNeighbors(closestNode, grid);
   }
+
+  return visitedNodesInOrder;
 };
 
 export default dijkstra;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import TypeNode from "../types/Node";
 import Components from "../components";
-import dijkstra from '../algorithms/dijkstra';
+import dijkstra from "../algorithms/dijkstra";
 import "./index.css";
 
 const START_NODE_ROW = 10;
@@ -37,12 +37,27 @@ const getInitialGrid = () => {
 const PathFindingVisualiser = () => {
   const [grid, setGrid] = useState<TypeNode[][]>();
 
+  const animateDijkstra = async (visitedNodesInOrder: TypeNode[]) => {
+    for (let i = 0; i < visitedNodesInOrder.length; i++) {
+      setTimeout(() => {
+        const node = visitedNodesInOrder[i];
+        const domElement = document.getElementById(
+          `node-${node.row}-${node.col}`
+        );
+        if (domElement !== null) {
+          domElement.className = "node node-visited";
+        }
+      }, 10 * i);
+    }
+  };
+
   const visualiseDijkstra = () => {
     if (grid === undefined) return;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const endNode = grid[END_NODE_ROW][END_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
     console.log(visitedNodesInOrder);
+    animateDijkstra(visitedNodesInOrder);
   };
 
   useEffect(() => {
