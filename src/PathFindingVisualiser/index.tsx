@@ -13,6 +13,8 @@ const START_NODE_COL = 10;
 const END_NODE_ROW = NUM_ROWS - 10;
 const END_NODE_COL = NUM_COLS - 10;
 const NOISE_ZOOM = 0.25;
+const NOISE_OFFSET_ROW = 100;
+const NOISE_OFFSET_COL = 10;
 
 const createNode = (col: number, row: number): TypeNode => {
   return {
@@ -20,7 +22,10 @@ const createNode = (col: number, row: number): TypeNode => {
     row,
     isStart: START_NODE_COL === col && START_NODE_ROW === row,
     isEnd: END_NODE_COL === col && END_NODE_ROW === row,
-    weight: noise(col * NOISE_ZOOM, row * NOISE_ZOOM),
+    weight: noise(
+      col * NOISE_ZOOM + NOISE_OFFSET_COL,
+      row * NOISE_ZOOM + NOISE_OFFSET_ROW
+    ),
     distance: Infinity,
     isVisited: false,
     previousNode: null,
