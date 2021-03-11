@@ -4,11 +4,15 @@ import Components from "../components";
 import dijkstra, { getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import "./index.css";
 import { getRandomInt } from "../utils";
+import { noise } from "../utils/perlinNoise";
 
+const NUM_ROWS = 32;
+const NUM_COLS = 64;
 const START_NODE_ROW = 10;
 const START_NODE_COL = 10;
-const END_NODE_ROW = 30;
-const END_NODE_COL = 30;
+const END_NODE_ROW = NUM_ROWS - 10;
+const END_NODE_COL = NUM_COLS - 10;
+const NOISE_ZOOM = 0.25;
 
 const createNode = (col: number, row: number): TypeNode => {
   return {
@@ -16,7 +20,7 @@ const createNode = (col: number, row: number): TypeNode => {
     row,
     isStart: START_NODE_COL === col && START_NODE_ROW === row,
     isEnd: END_NODE_COL === col && END_NODE_ROW === row,
-    weight: getRandomInt(1, 100),
+    weight: noise(col * NOISE_ZOOM, row * NOISE_ZOOM),
     distance: Infinity,
     isVisited: false,
     previousNode: null,
@@ -25,9 +29,9 @@ const createNode = (col: number, row: number): TypeNode => {
 
 const getInitialGrid = () => {
   const grid: TypeNode[][] = [];
-  for (let row = 0; row < 40; row++) {
+  for (let row = 0; row < NUM_ROWS; row++) {
     const currentRow = [];
-    for (let col = 0; col < 50; col++) {
+    for (let col = 0; col < NUM_COLS; col++) {
       currentRow.push(createNode(col, row));
     }
     grid.push(currentRow);

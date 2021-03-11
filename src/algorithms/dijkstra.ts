@@ -68,7 +68,7 @@ export const getNodesInShortestPathOrder = (endNode: TypeNode) => {
   const nodesInShortestPathOrder = [];
   let currentNode: TypeNode | null = endNode;
   while (currentNode !== null) {
-    nodesInShortestPathOrder.unshift(currentNode);
+    nodesInShortestPathOrder.push(currentNode);
     currentNode = currentNode.previousNode;
   }
   return nodesInShortestPathOrder;
