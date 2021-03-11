@@ -1,6 +1,5 @@
 .node {
-  width: 20px;
-  height: 20px;
+  flex-grow: 1;
   outline: 1px solid rgb(175, 216, 248);
   background-color: black;
   display: inline-block;
