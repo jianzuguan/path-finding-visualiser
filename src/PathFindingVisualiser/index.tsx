@@ -4,61 +4,15 @@ import TypeNode from "../types/Node";
 import Components from "../components";
 import dijkstra, { getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import "./index.css";
-import { noise } from "../utils/perlinNoise";
-
-const NUM_ROWS = 32;
-const NUM_COLS = 64;
-const START_NODE_ROW = 10;
-const START_NODE_COL = 10;
-const END_NODE_ROW = NUM_ROWS - 10;
-const END_NODE_COL = NUM_COLS - 10;
-const NOISE_ZOOM = 0.25;
-const NOISE_OFFSET_ROW = 100;
-const NOISE_OFFSET_COL = 10;
-
-const createNode = (
-  col: number,
-  row: number,
-  startNodeRow: number,
-  startNodeCol: number,
-  endNodeRow: number,
-  endNodeCol: number
-): TypeNode => {
-  return {
-    col,
-    row,
-    isStart: startNodeCol === col && startNodeRow === row,
-    isEnd: endNodeCol === col && endNodeRow === row,
-    weight: noise(
-      col * NOISE_ZOOM + NOISE_OFFSET_COL,
-      row * NOISE_ZOOM + NOISE_OFFSET_ROW
-    ),
-    distance: Infinity,
-    isVisited: false,
-    previousNode: null,
-  };
-};
-
-const getInitialGrid = (
-  numRows = NUM_ROWS,
-  numCols = NUM_COLS,
-  startNodeRow = START_NODE_ROW,
-  startNodeCol = START_NODE_COL,
-  endNodeRow = END_NODE_ROW,
-  endNodeCol = END_NODE_COL
-) => {
-  const grid: TypeNode[][] = [];
-  for (let row = 0; row < numRows; row++) {
-    const currentRow = [];
-    for (let col = 0; col < numCols; col++) {
-      currentRow.push(
-        createNode(col, row, startNodeRow, startNodeCol, endNodeRow, endNodeCol)
-      );
-    }
-    grid.push(currentRow);
-  }
-  return grid;
-};
+import {
+  NUM_ROWS,
+  NUM_COLS,
+  START_NODE_ROW,
+  START_NODE_COL,
+  END_NODE_ROW,
+  END_NODE_COL,
+} from "../utils/controlParams";
+import getInitialGrid from "../utils/getInitialGrid";
 
 const PathFindingVisualiser = () => {
   const [numRows, setNumRows] = useState(NUM_ROWS);

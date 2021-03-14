@@ -1,0 +1,9 @@
+export const NUM_ROWS = 32;
+export const NUM_COLS = 64;
+export const START_NODE_ROW = 10;
+export const START_NODE_COL = 10;
+export const END_NODE_ROW = NUM_ROWS - 10;
+export const END_NODE_COL = NUM_COLS - 10;
+export const NOISE_ZOOM = 0.25;
+export const NOISE_OFFSET_ROW = 100;
+export const NOISE_OFFSET_COL = 10;
