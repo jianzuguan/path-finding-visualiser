@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, TextField } from "@material-ui/core";
 import TypeNode from "../types/Node";
 import Components from "../components";
 import dijkstra, { getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import "./index.css";
-import { getRandomInt } from "../utils";
 import { noise } from "../utils/perlinNoise";
 
 const NUM_ROWS = 32;
