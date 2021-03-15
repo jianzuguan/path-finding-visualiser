@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, TextField } from "@material-ui/core";
+import {
+  Checkbox,
+  Button,
+  FormControlLabel,
+  TextField,
+} from "@material-ui/core";
 import TypeNode from "../types/Node";
 import Components from "../components";
 import dijkstra, { getNodesInShortestPathOrder } from "../algorithms/dijkstra";
@@ -21,6 +26,7 @@ const PathFindingVisualiser = () => {
   const [startNodeCol, setStartNodeCol] = useState(START_NODE_COL);
   const [endNodeRow, setEndNodeRow] = useState(END_NODE_ROW);
   const [endNodeCol, setEndNodeCol] = useState(END_NODE_COL);
+  const [instantShowResult, setInstantShowResult] = useState(true);
 
   const [grid, setGrid] = useState<TypeNode[][]>();
 
@@ -54,7 +60,7 @@ const PathFindingVisualiser = () => {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
           animateShortestPath(nodesInShortestPathOrder);
-        }, 10 * i);
+        }, 100 * i);
         return;
       }
       setTimeout(() => {
@@ -72,7 +78,46 @@ const PathFindingVisualiser = () => {
         if (domElement !== null) {
           domElement.className = "node node-visited";
         }
-      }, 10 * i);
+      }, 100 * i);
+    }
+  };
+
+  const instantResult = async (
+    visitedNodesInOrder: TypeNode[],
+    nodesInShortestPathOrder: TypeNode[]
+  ) => {
+    for (let i = 0; i < visitedNodesInOrder.length; i++) {
+      const node = visitedNodesInOrder[i];
+      if (
+        node === null ||
+        (startNodeRow === node.row && startNodeCol === node.col) ||
+        (endNodeRow === node.row && endNodeCol === node.col)
+      ) {
+        continue;
+      }
+      const domElement = document.getElementById(
+        `node-${node.row}-${node.col}`
+      );
+      if (domElement !== null) {
+        domElement.className = "node node-visited";
+      }
+    }
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      const node = nodesInShortestPathOrder[i];
+      if (
+        node === null ||
+        (startNodeRow === node.row && startNodeCol === node.col) ||
+        (endNodeRow === node.row && endNodeCol === node.col)
+      ) {
+        continue;
+      }
+      const domElement = document.getElementById(
+        `node-${node.row}-${node.col}`
+      );
+      if (domElement === null) {
+        continue;
+      }
+      domElement.className = "node node-shortest-path";
     }
   };
 
@@ -83,7 +128,11 @@ const PathFindingVisualiser = () => {
     const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
     console.log(visitedNodesInOrder);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    if (instantShowResult) {
+      instantResult(visitedNodesInOrder, nodesInShortestPathOrder);
+    } else {
+      animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    }
   };
 
   useEffect(() => {
@@ -109,7 +158,17 @@ const PathFindingVisualiser = () => {
         <Button variant="contained" color="primary" onClick={visualiseDijkstra}>
           Just do it
         </Button>
-
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={instantShowResult}
+              onChange={(e) => setInstantShowResult(e.target.checked)}
+              name="instant-show-result-checkbox"
+              color="primary"
+            />
+          }
+          label="Instant show result"
+        />
         <TextField
           variant="outlined"
           type="number"
