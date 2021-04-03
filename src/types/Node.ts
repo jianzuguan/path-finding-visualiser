@@ -1,6 +1,6 @@
 interface Node {
-  col: number;
-  row: number;
+  x: number;
+  y: number;
   isStart: boolean;
   isEnd: boolean; 
   weight: number;

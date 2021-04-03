@@ -18,7 +18,7 @@ const sortNodesByDistance = (unvisitedNoes: TypeNode[]) => {
 
 const getUnvisitedNeighbors = (node: TypeNode, grid: TypeNode[][]) => {
   const neighbors = [];
-  const { col, row } = node;
+  const { x: col, y: row } = node;
   if (row > 0) neighbors.push(grid[row - 1][col]);
   if (row < grid.length - 1) neighbors.push(grid[row + 1][col]);
   if (col > 0) neighbors.push(grid[row][col - 1]);
@@ -32,7 +32,7 @@ const updateUnvisitedNeighbors = (
 ) => {
   const unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid);
   for (const neighbor of unvisitedNeighbors) {
-    const newDistance= currentNode.distance + neighbor.weight;
+    const newDistance = currentNode.distance + neighbor.weight;
     if (newDistance < neighbor.distance) {
       neighbor.distance = newDistance;
       neighbor.previousNode = currentNode;

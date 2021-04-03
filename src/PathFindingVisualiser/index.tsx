@@ -9,12 +9,7 @@ import TypeNode from "types/Node";
 import Components from "components";
 import dijkstra, { getNodesInShortestPathOrder } from "algorithms/dijkstra";
 import "./index.css";
-import {
-  NUM_ROWS,
-  NUM_COLS,
-  END_NODE_ROW,
-  END_NODE_COL,
-} from "utils/controlParams";
+import { NUM_ROWS, NUM_COLS } from "utils/controlParams";
 import getInitialGrid from "utils/getInitialGrid";
 
 import { useAppSelector, useAppDispatch } from "redux/hooks";
@@ -23,13 +18,21 @@ import { RootState } from "redux/store";
 
 const PathFindingVisualiser = () => {
   const dispatch = useAppDispatch();
-  const startNodeX = useAppSelector((state:RootState) => state.controls.startNodeX);
-  const startNodeY = useAppSelector((state:RootState) => state.controls.startNodeY);
+  const startNodeX = useAppSelector(
+    (state: RootState) => state.controls.startNodeX
+  );
+  const startNodeY = useAppSelector(
+    (state: RootState) => state.controls.startNodeY
+  );
+  const endNodeX = useAppSelector(
+    (state: RootState) => state.controls.endNodeX
+  );
+  const endNodeY = useAppSelector(
+    (state: RootState) => state.controls.endNodeY
+  );
 
   const [numRows, setNumRows] = useState(NUM_ROWS);
   const [numCols, setNumCols] = useState(NUM_COLS);
-  const [endNodeRow, setEndNodeRow] = useState(END_NODE_ROW);
-  const [endNodeCol, setEndNodeCol] = useState(END_NODE_COL);
   const [instantShowResult, setInstantShowResult] = useState(true);
 
   const [grid, setGrid] = useState<TypeNode[][]>();
@@ -40,14 +43,12 @@ const PathFindingVisualiser = () => {
         const node = nodesInShortestPathOrder[i];
         if (
           node === null ||
-          (startNodeY === node.row && startNodeX === node.col) ||
-          (endNodeRow === node.row && endNodeCol === node.col)
+          (startNodeY === node.y && startNodeX === node.x) ||
+          (endNodeY === node.y && endNodeX === node.x)
         ) {
           return;
         }
-        const domElement = document.getElementById(
-          `node-${node.row}-${node.col}`
-        );
+        const domElement = document.getElementById(`node-${node.y}-${node.x}`);
         if (domElement === null) {
           return;
         }
@@ -71,14 +72,12 @@ const PathFindingVisualiser = () => {
         const node = visitedNodesInOrder[i];
         if (
           node === null ||
-          (startNodeY === node.row && startNodeX === node.col) ||
-          (endNodeRow === node.row && endNodeCol === node.col)
+          (startNodeY === node.y && startNodeX === node.x) ||
+          (endNodeY === node.y && endNodeX === node.x)
         ) {
           return;
         }
-        const domElement = document.getElementById(
-          `node-${node.row}-${node.col}`
-        );
+        const domElement = document.getElementById(`node-${node.y}-${node.x}`);
         if (domElement !== null) {
           domElement.className = "node node-visited";
         }
@@ -94,14 +93,12 @@ const PathFindingVisualiser = () => {
       const node = visitedNodesInOrder[i];
       if (
         node === null ||
-        (startNodeY === node.row && startNodeX === node.col) ||
-        (endNodeRow === node.row && endNodeCol === node.col)
+        (startNodeY === node.y && startNodeX === node.x) ||
+        (endNodeY === node.y && endNodeX === node.x)
       ) {
         continue;
       }
-      const domElement = document.getElementById(
-        `node-${node.row}-${node.col}`
-      );
+      const domElement = document.getElementById(`node-${node.y}-${node.x}`);
       if (domElement !== null) {
         domElement.className = "node node-visited";
       }
@@ -110,14 +107,12 @@ const PathFindingVisualiser = () => {
       const node = nodesInShortestPathOrder[i];
       if (
         node === null ||
-        (startNodeY === node.row && startNodeX === node.col) ||
-        (endNodeRow === node.row && endNodeCol === node.col)
+        (startNodeY === node.y && startNodeX === node.x) ||
+        (endNodeY === node.y && endNodeX === node.x)
       ) {
         continue;
       }
-      const domElement = document.getElementById(
-        `node-${node.row}-${node.col}`
-      );
+      const domElement = document.getElementById(`node-${node.y}-${node.x}`);
       if (domElement === null) {
         continue;
       }
@@ -128,7 +123,7 @@ const PathFindingVisualiser = () => {
   const visualiseDijkstra = () => {
     if (grid === undefined) return;
     const startNode = grid[startNodeY][startNodeX];
-    const endNode = grid[endNodeRow][endNodeCol];
+    const endNode = grid[endNodeY][endNodeX];
     const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
     console.log(visitedNodesInOrder);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
@@ -148,13 +143,13 @@ const PathFindingVisualiser = () => {
     const initialGrid = getInitialGrid(
       numRows,
       numCols,
-      startNodeY,
       startNodeX,
-      endNodeRow,
-      endNodeCol
+      startNodeY,
+      endNodeX,
+      endNodeY
     );
     setGrid(initialGrid);
-  }, [numRows, numCols, startNodeY, startNodeX, endNodeRow, endNodeCol]);
+  }, [numRows, numCols, startNodeX, startNodeY, endNodeX, endNodeY]);
 
   return (
     <>
@@ -222,8 +217,12 @@ const PathFindingVisualiser = () => {
           type="number"
           id="end-node-row-text-field"
           label="End Node Row"
-          value={endNodeRow}
-          onChange={(e) => setEndNodeRow(Number(e.target.value) || 1)}
+          value={endNodeY}
+          onChange={(e) =>
+            dispatch(
+              controlsSlice.actions.setEndNodeY(Number(e.target.value) || 1)
+            )
+          }
         />
 
         <TextField
@@ -231,8 +230,12 @@ const PathFindingVisualiser = () => {
           type="number"
           id="end-node-col-text-field"
           label="End Node Col"
-          value={endNodeCol}
-          onChange={(e) => setEndNodeCol(Number(e.target.value) || 1)}
+          value={endNodeX}
+          onChange={(e) =>
+            dispatch(
+              controlsSlice.actions.setEndNodeX(Number(e.target.value) || 1)
+            )
+          }
         />
       </div>
       <div className="grid">

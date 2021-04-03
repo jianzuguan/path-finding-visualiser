@@ -1,27 +1,27 @@
 import {
   NOISE_ZOOM,
-  NOISE_OFFSET_COL,
-  NOISE_OFFSET_ROW,
+  NOISE_OFFSET_X,
+  NOISE_OFFSET_Y,
 } from "utils/controlParams";
 import { noise } from "utils/perlinNoise";
 import TypeNode from "types/Node";
 
 const createNode = (
-  col: number,
-  row: number,
-  startNodeRow: number,
-  startNodeCol: number,
-  endNodeRow: number,
-  endNodeCol: number
+  x: number,
+  y: number,
+  startNodeX: number,
+  startNodeY: number,
+  endNodeX: number,
+  endNodeY: number
 ): TypeNode => {
   return {
-    col,
-    row,
-    isStart: startNodeCol === col && startNodeRow === row,
-    isEnd: endNodeCol === col && endNodeRow === row,
+    x,
+    y,
+    isStart: startNodeX === x && startNodeY === y,
+    isEnd: endNodeX === x && endNodeY === y,
     weight: noise(
-      col * NOISE_ZOOM + NOISE_OFFSET_COL,
-      row * NOISE_ZOOM + NOISE_OFFSET_ROW
+      x * NOISE_ZOOM + NOISE_OFFSET_X,
+      y * NOISE_ZOOM + NOISE_OFFSET_Y
     ),
     distance: Infinity,
     isVisited: false,

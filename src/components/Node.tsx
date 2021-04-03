@@ -6,7 +6,7 @@ interface Props {
 }
 
 const Node = (props: Props) => {
-  const { row, col, isStart, isEnd, weight } = props.nodeObj;
+  const { y: row, x: col, isStart, isEnd, weight } = props.nodeObj;
 
   const colourStyle = isStart ? "node-start" : isEnd ? "node-end" : "";
 
