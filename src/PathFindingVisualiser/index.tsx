@@ -12,18 +12,22 @@ import "./index.css";
 import {
   NUM_ROWS,
   NUM_COLS,
-  START_NODE_ROW,
-  START_NODE_COL,
   END_NODE_ROW,
   END_NODE_COL,
 } from "utils/controlParams";
 import getInitialGrid from "utils/getInitialGrid";
 
+import { useAppSelector, useAppDispatch } from "redux/hooks";
+import { controlsSlice } from "redux/controlSlice";
+import { RootState } from "redux/store";
+
 const PathFindingVisualiser = () => {
+  const dispatch = useAppDispatch();
+  const startNodeX = useAppSelector((state:RootState) => state.controls.startNodeX);
+  const startNodeY = useAppSelector((state:RootState) => state.controls.startNodeY);
+
   const [numRows, setNumRows] = useState(NUM_ROWS);
   const [numCols, setNumCols] = useState(NUM_COLS);
-  const [startNodeRow, setStartNodeRow] = useState(START_NODE_ROW);
-  const [startNodeCol, setStartNodeCol] = useState(START_NODE_COL);
   const [endNodeRow, setEndNodeRow] = useState(END_NODE_ROW);
   const [endNodeCol, setEndNodeCol] = useState(END_NODE_COL);
   const [instantShowResult, setInstantShowResult] = useState(true);
@@ -36,7 +40,7 @@ const PathFindingVisualiser = () => {
         const node = nodesInShortestPathOrder[i];
         if (
           node === null ||
-          (startNodeRow === node.row && startNodeCol === node.col) ||
+          (startNodeY === node.row && startNodeX === node.col) ||
           (endNodeRow === node.row && endNodeCol === node.col)
         ) {
           return;
@@ -67,7 +71,7 @@ const PathFindingVisualiser = () => {
         const node = visitedNodesInOrder[i];
         if (
           node === null ||
-          (startNodeRow === node.row && startNodeCol === node.col) ||
+          (startNodeY === node.row && startNodeX === node.col) ||
           (endNodeRow === node.row && endNodeCol === node.col)
         ) {
           return;
@@ -90,7 +94,7 @@ const PathFindingVisualiser = () => {
       const node = visitedNodesInOrder[i];
       if (
         node === null ||
-        (startNodeRow === node.row && startNodeCol === node.col) ||
+        (startNodeY === node.row && startNodeX === node.col) ||
         (endNodeRow === node.row && endNodeCol === node.col)
       ) {
         continue;
@@ -106,7 +110,7 @@ const PathFindingVisualiser = () => {
       const node = nodesInShortestPathOrder[i];
       if (
         node === null ||
-        (startNodeRow === node.row && startNodeCol === node.col) ||
+        (startNodeY === node.row && startNodeX === node.col) ||
         (endNodeRow === node.row && endNodeCol === node.col)
       ) {
         continue;
@@ -123,7 +127,7 @@ const PathFindingVisualiser = () => {
 
   const visualiseDijkstra = () => {
     if (grid === undefined) return;
-    const startNode = grid[startNodeRow][startNodeCol];
+    const startNode = grid[startNodeY][startNodeX];
     const endNode = grid[endNodeRow][endNodeCol];
     const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
     console.log(visitedNodesInOrder);
@@ -144,13 +148,13 @@ const PathFindingVisualiser = () => {
     const initialGrid = getInitialGrid(
       numRows,
       numCols,
-      startNodeRow,
-      startNodeCol,
+      startNodeY,
+      startNodeX,
       endNodeRow,
       endNodeCol
     );
     setGrid(initialGrid);
-  }, [numRows, numCols, startNodeRow, startNodeCol, endNodeRow, endNodeCol]);
+  }, [numRows, numCols, startNodeY, startNodeX, endNodeRow, endNodeCol]);
 
   return (
     <>
@@ -192,8 +196,12 @@ const PathFindingVisualiser = () => {
           type="number"
           id="start-node-row-text-field"
           label="Start Node Row"
-          value={startNodeRow}
-          onChange={(e) => setStartNodeRow(Number(e.target.value) || 1)}
+          value={startNodeY}
+          onChange={(e) =>
+            dispatch(
+              controlsSlice.actions.setStartNodeY(Number(e.target.value) || 1)
+            )
+          }
         />
 
         <TextField
@@ -201,8 +209,12 @@ const PathFindingVisualiser = () => {
           type="number"
           id="start-node-col-text-field"
           label="Start Node Col"
-          value={startNodeCol}
-          onChange={(e) => setStartNodeCol(Number(e.target.value) || 1)}
+          value={startNodeX}
+          onChange={(e) =>
+            dispatch(
+              controlsSlice.actions.setStartNodeX(Number(e.target.value) || 1)
+            )
+          }
         />
 
         <TextField
