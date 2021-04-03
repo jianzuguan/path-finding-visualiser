@@ -1,4 +1,4 @@
-import Node from "./Node";
+import Node from "components/Node";
 
 const components = {
   Node,

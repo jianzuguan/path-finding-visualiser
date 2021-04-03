@@ -2,9 +2,9 @@ import {
   NOISE_ZOOM,
   NOISE_OFFSET_COL,
   NOISE_OFFSET_ROW,
-} from "./controlParams";
-import { noise } from "./perlinNoise";
-import TypeNode from "../types/Node";
+} from "utils/controlParams";
+import { noise } from "utils/perlinNoise";
+import TypeNode from "types/Node";
 
 const createNode = (
   col: number,

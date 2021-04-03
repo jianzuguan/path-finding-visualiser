@@ -1,5 +1,5 @@
-import "./Node.css";
-import TypeNode from "../types/Node";
+import "components/Node.css";
+import TypeNode from "types/Node";
 
 interface Props {
   nodeObj: TypeNode;

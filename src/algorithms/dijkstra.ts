@@ -1,4 +1,4 @@
-import TypeNode from "../types/Node";
+import TypeNode from "types/Node";
 
 const getAllNodes = (grid: TypeNode[][]) => {
   const nodes = [];

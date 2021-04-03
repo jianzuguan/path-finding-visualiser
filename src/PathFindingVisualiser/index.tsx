@@ -5,9 +5,9 @@ import {
   FormControlLabel,
   TextField,
 } from "@material-ui/core";
-import TypeNode from "../types/Node";
-import Components from "../components";
-import dijkstra, { getNodesInShortestPathOrder } from "../algorithms/dijkstra";
+import TypeNode from "types/Node";
+import Components from "components";
+import dijkstra, { getNodesInShortestPathOrder } from "algorithms/dijkstra";
 import "./index.css";
 import {
   NUM_ROWS,
@@ -16,8 +16,8 @@ import {
   START_NODE_COL,
   END_NODE_ROW,
   END_NODE_COL,
-} from "../utils/controlParams";
-import getInitialGrid from "../utils/getInitialGrid";
+} from "utils/controlParams";
+import getInitialGrid from "utils/getInitialGrid";
 
 const PathFindingVisualiser = () => {
   const [numRows, setNumRows] = useState(NUM_ROWS);
