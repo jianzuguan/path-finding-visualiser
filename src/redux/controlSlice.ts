@@ -3,6 +3,8 @@ import * as controlsParams from "utils/controlParams";
 
 // Define a type for the slice state
 interface controlsState {
+  numRows: number;
+  numCols: number;
   startNodeX: number;
   startNodeY: number;
   endNodeX: number;
@@ -13,6 +15,8 @@ interface controlsState {
 
 // Define the initial state using that type
 const initialState: controlsState = {
+  numRows: controlsParams.NUM_ROWS,
+  numCols: controlsParams.NUM_COLS,
   startNodeX: controlsParams.START_NODE_X,
   startNodeY: controlsParams.START_NODE_Y,
   endNodeX: controlsParams.END_NODE_X,
@@ -27,6 +31,12 @@ export const controlsSlice = createSlice({
   initialState,
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
+    setNumRows: (state, action: PayloadAction<number>) => {
+      state.numRows = action.payload;
+    },
+    setNumCols: (state, action: PayloadAction<number>) => {
+      state.numCols = action.payload;
+    },
     setStartNodeX: (state, action: PayloadAction<number>) => {
       state.startNodeX = action.payload;
     },
