@@ -1,13 +1,16 @@
 import React from "react";
-import { TextField } from "@material-ui/core";
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { RootState } from "redux/store";
+import { Checkbox, FormControlLabel, TextField } from "@material-ui/core";
 import { NUM_COLS, NUM_ROWS } from "utils/controlParams";
-import { controlsSlice } from "redux/controlSlice";
+import { RootState } from "redux/store";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import { controlsSlice } from "redux/reducers/controlSlice";
 
 const ControlPanel = () => {
   const dispatch = useAppDispatch();
 
+  const instantShowResult = useAppSelector(
+    (state: RootState) => state.controls.instantShowResult
+  );
   const numRows = useAppSelector((state: RootState) => state.controls.numRows);
   const numCols = useAppSelector((state: RootState) => state.controls.numCols);
   const startNodeX = useAppSelector(
@@ -22,9 +25,24 @@ const ControlPanel = () => {
   const endNodeY = useAppSelector(
     (state: RootState) => state.controls.endNodeY
   );
-  
+
   return (
     <>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={instantShowResult}
+            onChange={(e) =>
+              dispatch(
+                controlsSlice.actions.setInstantShowResult(e.target.checked)
+              )
+            }
+            name="instant-show-result-checkbox"
+            color="primary"
+          />
+        }
+        label="Instant show result"
+      />
       <TextField
         variant="outlined"
         type="number"

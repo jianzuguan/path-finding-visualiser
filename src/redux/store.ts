@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import controlsReducer from 'redux/controlSlice';
+import controlsReducer from 'redux/reducers/controlSlice';
+import gridSlice from 'redux/reducers/gridSlice';
 
 const store = configureStore({
   reducer: {
     controls: controlsReducer,
+    grid: gridSlice,
   }
 })
 

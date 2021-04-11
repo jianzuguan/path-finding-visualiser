@@ -11,6 +11,7 @@ interface controlsState {
   endNodeY: number;
   noiseOffsetX: number;
   noiseOffsetY: number;
+  instantShowResult: boolean;
 }
 
 // Define the initial state using that type
@@ -23,6 +24,7 @@ const initialState: controlsState = {
   endNodeY: controlsParams.END_NODE_Y,
   noiseOffsetX: controlsParams.NOISE_OFFSET_X,
   noiseOffsetY: controlsParams.NOISE_OFFSET_Y,
+  instantShowResult: true,
 };
 
 export const controlsSlice = createSlice({
@@ -55,6 +57,9 @@ export const controlsSlice = createSlice({
     setNoiseOffsetY: (state, action: PayloadAction<number>) => {
       state.noiseOffsetY = action.payload;
     },
+    setInstantShowResult: (state, action: PayloadAction<boolean>) => {
+      state.instantShowResult = action.payload;
+    }
   },
 });
 

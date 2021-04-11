@@ -1,15 +1,21 @@
-import { useEffect, useState } from "react";
-import { Checkbox, Button, FormControlLabel } from "@material-ui/core";
+import { useEffect } from "react";
+import { Button } from "@material-ui/core";
 import TypeNode from "types/Node";
 import Components from "components";
-import dijkstra, { getNodesInShortestPathOrder } from "algorithms/dijkstra";
+import ControlPanel from "PathFindingVisualiser/ControlPanel";
 import "./index.css";
+import dijkstra, { getNodesInShortestPathOrder } from "algorithms/dijkstra";
 import getInitialGrid from "utils/getInitialGrid";
-import { useAppSelector } from "redux/hooks";
 import { RootState } from "redux/store";
-import ControlPanel from "./ControlPanel";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import { gridSlice } from "redux/reducers/gridSlice";
 
 const PathFindingVisualiser = () => {
+  const dispatch = useAppDispatch();
+
+  const instantShowResult = useAppSelector(
+    (state: RootState) => state.controls.instantShowResult
+  );
   const numRows = useAppSelector((state: RootState) => state.controls.numRows);
   const numCols = useAppSelector((state: RootState) => state.controls.numCols);
   const startNodeX = useAppSelector(
@@ -25,9 +31,7 @@ const PathFindingVisualiser = () => {
     (state: RootState) => state.controls.endNodeY
   );
 
-  const [instantShowResult, setInstantShowResult] = useState(true);
-
-  const [grid, setGrid] = useState<TypeNode[][]>();
+  const grid = useAppSelector((state: RootState) => state.grid.grid);
 
   const animateShortestPath = (nodesInShortestPathOrder: TypeNode[]) => {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
@@ -128,8 +132,8 @@ const PathFindingVisualiser = () => {
 
   useEffect(() => {
     const initialGrid = getInitialGrid();
-    setGrid(initialGrid);
-  }, []);
+    dispatch(gridSlice.actions.setGrid(initialGrid));
+  }, [dispatch]);
 
   useEffect(() => {
     const initialGrid = getInitialGrid(
@@ -140,8 +144,8 @@ const PathFindingVisualiser = () => {
       endNodeX,
       endNodeY
     );
-    setGrid(initialGrid);
-  }, [numRows, numCols, startNodeX, startNodeY, endNodeX, endNodeY]);
+    dispatch(gridSlice.actions.setGrid(initialGrid));
+  }, [dispatch, numRows, numCols, startNodeX, startNodeY, endNodeX, endNodeY]);
 
   return (
     <>
@@ -149,17 +153,7 @@ const PathFindingVisualiser = () => {
         <Button variant="contained" color="primary" onClick={visualiseDijkstra}>
           Just do it
         </Button>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={instantShowResult}
-              onChange={(e) => setInstantShowResult(e.target.checked)}
-              name="instant-show-result-checkbox"
-              color="primary"
-            />
-          }
-          label="Instant show result"
-        />
+
         <ControlPanel />
       </div>
       <div className="grid">
