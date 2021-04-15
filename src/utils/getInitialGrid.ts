@@ -5,9 +5,9 @@ import {
   START_NODE_X,
   END_NODE_Y,
   END_NODE_X,
-} from "utils/controlParams";
-import TypeNode from "types/Node";
-import createNode from "utils/createNode";
+} from 'utils/controlParams';
+import TypeNode from 'types/Node';
+import createNode from 'utils/createNode';
 
 const getInitialGrid = (
   numRows = NUM_ROWS,

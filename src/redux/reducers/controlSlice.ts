@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import * as controlsParams from "utils/controlParams";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import * as controlsParams from 'utils/controlParams';
 
 // Define a type for the slice state
 interface controlsState {
@@ -28,7 +28,7 @@ const initialState: controlsState = {
 };
 
 export const controlsSlice = createSlice({
-  name: "controls",
+  name: 'controls',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
@@ -59,7 +59,7 @@ export const controlsSlice = createSlice({
     },
     setInstantShowResult: (state, action: PayloadAction<boolean>) => {
       state.instantShowResult = action.payload;
-    }
+    },
   },
 });
 

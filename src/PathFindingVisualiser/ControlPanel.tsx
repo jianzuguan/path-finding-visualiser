@@ -1,9 +1,8 @@
-import React from "react";
-import { Checkbox, FormControlLabel, TextField } from "@material-ui/core";
-import { NUM_COLS, NUM_ROWS } from "utils/controlParams";
-import { RootState } from "redux/store";
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { controlsSlice } from "redux/reducers/controlSlice";
+import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import { NUM_COLS, NUM_ROWS } from 'utils/controlParams';
+import { RootState } from 'redux/store';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { controlsSlice } from 'redux/reducers/controlSlice';
 
 const ControlPanel = () => {
   const dispatch = useAppDispatch();

@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import TypeNode from "types/Node";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import TypeNode from 'types/Node';
 
 // Define a type for the slice state
 interface gridState {
@@ -12,7 +12,7 @@ const initialState: gridState = {
 };
 
 export const gridSlice = createSlice({
-  name: "grid",
+  name: 'grid',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
