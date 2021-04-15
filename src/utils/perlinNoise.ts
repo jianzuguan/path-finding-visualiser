@@ -27,9 +27,9 @@ const PERLIN_SIZE = 4095;
 let perlin_octaves = 4; // default to medium smooth
 let perlin_amp_falloff = 0.5; // 50% reduction/octave
 
-const scaled_cosine = (i:number) => 0.5 * (1.0 - Math.cos(i * Math.PI));
+const scaled_cosine = (i: number) => 0.5 * (1.0 - Math.cos(i * Math.PI));
 
-let perlin:number[] | undefined; // will be initialized lazily by noise() or noiseSeed()
+let perlin: number[] | undefined; // will be initialized lazily by noise() or noiseSeed()
 
 /**
  * Returns the Perlin noise value at specified coordinates. Perlin noise is
@@ -96,7 +96,7 @@ let perlin:number[] | undefined; // will be initialized lazily by noise() or noi
  * horizontal wave pattern effected by mouse x-position & updating noise values.
  */
 
-export const noise = function (x:number, y = 0, z = 0) {
+export const noise = function (x: number, y = 0, z = 0) {
   if (perlin == null) {
     perlin = new Array(PERLIN_SIZE + 1);
     for (let i = 0; i < PERLIN_SIZE + 1; i++) {
@@ -229,7 +229,7 @@ export const noise = function (x:number, y = 0, z = 0) {
  * @alt
  * 2 vertical grey smokey patterns affected my mouse x-position and noise.
  */
-export const noiseDetail = function (lod:number, falloff:number) {
+export const noiseDetail = function (lod: number, falloff: number) {
   if (lod > 0) {
     perlin_octaves = lod;
   }
@@ -278,9 +278,9 @@ export const noiseSeed = function (seed: number) {
     const a = 1664525;
     // c and m should be co-prime
     const c = 1013904223;
-    let seed: number, z:number;
+    let seed: number, z: number;
     return {
-      setSeed(val:number) {
+      setSeed(val: number) {
         // pick a random seed if val is undefined or null
         // the >>> 0 casts the seed to an unsigned 32-bit integer
         z = seed = (val == null ? Math.random() * m : val) >>> 0;

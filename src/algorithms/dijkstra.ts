@@ -1,4 +1,4 @@
-import TypeNode from "types/Node";
+import TypeNode from 'types/Node';
 
 const getAllNodes = (grid: TypeNode[][]) => {
   const nodes = [];
@@ -32,7 +32,7 @@ const updateUnvisitedNeighbors = (
 ) => {
   const unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid);
   for (const neighbor of unvisitedNeighbors) {
-    const newDistance= currentNode.distance + neighbor.weight;
+    const newDistance = currentNode.distance + neighbor.weight;
     if (newDistance < neighbor.distance) {
       neighbor.distance = newDistance;
       neighbor.previousNode = currentNode;

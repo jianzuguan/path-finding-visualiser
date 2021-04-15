@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Checkbox,
   Button,
   FormControlLabel,
   TextField,
-} from "@material-ui/core";
-import TypeNode from "types/Node";
-import Components from "components";
-import dijkstra, { getNodesInShortestPathOrder } from "algorithms/dijkstra";
-import "./index.css";
+} from '@material-ui/core';
+import TypeNode from 'types/Node';
+import Components from 'components';
+import dijkstra, { getNodesInShortestPathOrder } from 'algorithms/dijkstra';
+import './index.css';
 import {
   NUM_ROWS,
   NUM_COLS,
@@ -16,8 +16,8 @@ import {
   START_NODE_COL,
   END_NODE_ROW,
   END_NODE_COL,
-} from "utils/controlParams";
-import getInitialGrid from "utils/getInitialGrid";
+} from 'utils/controlParams';
+import getInitialGrid from 'utils/getInitialGrid';
 
 const PathFindingVisualiser = () => {
   const [numRows, setNumRows] = useState(NUM_ROWS);
@@ -47,7 +47,7 @@ const PathFindingVisualiser = () => {
         if (domElement === null) {
           return;
         }
-        domElement.className = "node node-shortest-path";
+        domElement.className = 'node node-shortest-path';
       }, 50 * i);
     }
   };
@@ -76,7 +76,7 @@ const PathFindingVisualiser = () => {
           `node-${node.row}-${node.col}`
         );
         if (domElement !== null) {
-          domElement.className = "node node-visited";
+          domElement.className = 'node node-visited';
         }
       }, 100 * i);
     }
@@ -99,7 +99,7 @@ const PathFindingVisualiser = () => {
         `node-${node.row}-${node.col}`
       );
       if (domElement !== null) {
-        domElement.className = "node node-visited";
+        domElement.className = 'node node-visited';
       }
     }
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
@@ -117,7 +117,7 @@ const PathFindingVisualiser = () => {
       if (domElement === null) {
         continue;
       }
-      domElement.className = "node node-shortest-path";
+      domElement.className = 'node node-shortest-path';
     }
   };
 
