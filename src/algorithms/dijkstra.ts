@@ -1,4 +1,4 @@
-import TypeNode from "types/Node";
+import TypeNode from 'types/Node';
 
 const getAllNodes = (grid: TypeNode[][]) => {
   const nodes = [];
@@ -60,7 +60,7 @@ const dijkstra = (
   const unvisitedNodes = getAllNodes(grid);
   startNode.distance = 0;
   const visitedNodesInOrder = [];
-  while (!!unvisitedNodes.length) {
+  while (unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
     const closestNode = unvisitedNodes.shift();
     if (!closestNode) continue;
@@ -114,7 +114,7 @@ export const hasVisitedFinishNode = (
   return false;
 };
 
-export const hasNext = (grid: TypeNode[][], finishNode: TypeNode) => {
+export const hasNext = (grid: TypeNode[][]) => {
   const unvisitedNodes = getAllUnvisitedNode(grid);
 
   sortNodesByDistance(unvisitedNodes);

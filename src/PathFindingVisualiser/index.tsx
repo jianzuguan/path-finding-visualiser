@@ -1,14 +1,14 @@
-import { useEffect } from "react";
-import { Button } from "@material-ui/core";
-import TypeNode from "types/Node";
-import Components from "components";
-import ControlPanel from "PathFindingVisualiser/ControlPanel";
-import "./index.css";
-import dijkstra, { getNodesInShortestPathOrder } from "algorithms/dijkstra";
-import getInitialGrid from "utils/getInitialGrid";
-import { RootState } from "redux/store";
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { gridSlice } from "redux/reducers/gridSlice";
+import { useEffect } from 'react';
+import { Button } from '@material-ui/core';
+import TypeNode from 'types/Node';
+import Components from 'components';
+import ControlPanel from 'PathFindingVisualiser/ControlPanel';
+import './index.css';
+import dijkstra, { getNodesInShortestPathOrder } from 'algorithms/dijkstra';
+import getInitialGrid from 'utils/getInitialGrid';
+import { RootState } from 'redux/store';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { gridSlice } from 'redux/reducers/gridSlice';
 
 const PathFindingVisualiser = () => {
   const dispatch = useAppDispatch();
@@ -31,7 +31,9 @@ const PathFindingVisualiser = () => {
     (state: RootState) => state.controls.endNodeY
   );
 
-  const grid = useAppSelector((state: RootState) => state.grid.grid);
+  const grid: TypeNode[][] = useAppSelector(
+    (state: RootState) => state.grid.grid
+  );
 
   const animateShortestPath = (nodesInShortestPathOrder: TypeNode[]) => {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
@@ -48,7 +50,7 @@ const PathFindingVisualiser = () => {
         if (domElement === null) {
           return;
         }
-        domElement.className = "node node-shortest-path";
+        domElement.className = 'node node-shortest-path';
       }, 50 * i);
     }
   };
@@ -75,7 +77,7 @@ const PathFindingVisualiser = () => {
         }
         const domElement = document.getElementById(`node-${node.y}-${node.x}`);
         if (domElement !== null) {
-          domElement.className = "node node-visited";
+          domElement.className = 'node node-visited';
         }
       }, 100 * i);
     }
@@ -96,7 +98,7 @@ const PathFindingVisualiser = () => {
       }
       const domElement = document.getElementById(`node-${node.y}-${node.x}`);
       if (domElement !== null) {
-        domElement.className = "node node-visited";
+        domElement.className = 'node node-visited';
       }
     }
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
@@ -112,7 +114,7 @@ const PathFindingVisualiser = () => {
       if (domElement === null) {
         continue;
       }
-      domElement.className = "node node-shortest-path";
+      domElement.className = 'node node-shortest-path';
     }
   };
 

@@ -1,5 +1,5 @@
-import "components/Node.css";
-import TypeNode from "types/Node";
+import 'components/Node.css';
+import TypeNode from 'types/Node';
 
 interface Props {
   nodeObj: TypeNode;
@@ -8,7 +8,7 @@ interface Props {
 const Node = (props: Props) => {
   const { y: row, x: col, isStart, isEnd, weight } = props.nodeObj;
 
-  const colourStyle = isStart ? "node-start" : isEnd ? "node-end" : "";
+  const colourStyle = isStart ? 'node-start' : isEnd ? 'node-end' : '';
 
   return (
     <div
