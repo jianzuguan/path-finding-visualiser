@@ -48,7 +48,7 @@ const dijkstra = (
   const unvisitedNodes = getAllNodes(grid);
   stratNode.distance = 0;
   const visitedNodesInOrder = [];
-  while (!!unvisitedNodes.length) {
+  while (unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
     const closestNode = unvisitedNodes.shift();
     if (!closestNode) continue;
