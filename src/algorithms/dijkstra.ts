@@ -86,14 +86,21 @@ export const getNodesInShortestPathOrder = (endNode: TypeNode) => {
   return nodesInShortestPathOrder;
 };
 
-export const init = (grid: TypeNode[][], startNode: TypeNode): TypeNode[][] => {
+export const init = (
+  grid: TypeNode[][],
+  startNodeX: number,
+  startNodeY: number
+): TypeNode[][] => {
   const gridClone = [...grid].map((row) => [...row]);
 
   if (
-    gridClone.length > startNode.y &&
-    gridClone[startNode.y].length > startNode.x
+    gridClone.length > startNodeY &&
+    gridClone[startNodeY].length > startNodeX
   ) {
-    gridClone[startNode.y][startNode.x].distance = 0;
+    gridClone[startNodeY][startNodeX] = {
+      ...gridClone[startNodeY][startNodeX],
+      distance: 0,
+    };
   }
 
   return gridClone;
@@ -101,14 +108,15 @@ export const init = (grid: TypeNode[][], startNode: TypeNode): TypeNode[][] => {
 
 export const hasVisitedFinishNode = (
   grid: TypeNode[][],
-  finishNode: TypeNode
+  finishNodeX: number,
+  finishNodeY: number
 ) => {
-  if (finishNode.x < 0 || finishNode.y < 0) {
+  if (finishNodeX < 0 || finishNodeY < 0) {
     return false;
   }
 
-  if (grid.length > finishNode.y && grid[finishNode.y].length > finishNode.x) {
-    return grid[finishNode.y][finishNode.x].isVisited;
+  if (grid.length > finishNodeY && grid[finishNodeY].length > finishNodeX) {
+    return grid[finishNodeY][finishNodeX].isVisited;
   }
 
   return false;
@@ -119,6 +127,7 @@ export const hasNext = (grid: TypeNode[][]) => {
 
   sortNodesByDistance(unvisitedNodes);
   const closestNode = unvisitedNodes.shift();
+  console.log(closestNode);
   // All nodes in grid visited.
   if (!closestNode) return false;
   // All reachable nodes visited.
@@ -128,11 +137,15 @@ export const hasNext = (grid: TypeNode[][]) => {
 };
 
 export const next = (grid: TypeNode[][]) => {
-  const gridClone = [...grid].map((row) => [...row]);
+  const gridClone = [...grid].map((row) =>
+    [...row].map(function (gridNode: TypeNode) {
+      return { ...gridNode };
+    })
+  );
 
   const unvisitedNodes = getAllUnvisitedNode(gridClone);
   sortNodesByDistance(unvisitedNodes);
-  const closestNode = unvisitedNodes.shift();
+  let closestNode = unvisitedNodes.shift();
   if (!closestNode) return gridClone;
   closestNode.isVisited = true;
   updateUnvisitedNeighbors(closestNode, gridClone);

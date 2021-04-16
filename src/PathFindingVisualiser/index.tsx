@@ -1,10 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Button } from '@material-ui/core';
 import TypeNode from 'types/Node';
 import Components from 'components';
 import ControlPanel from 'PathFindingVisualiser/ControlPanel';
 import './index.css';
-import dijkstra, { getNodesInShortestPathOrder } from 'algorithms/dijkstra';
+import dijkstra, {
+  getNodesInShortestPathOrder,
+  hasNext,
+  hasVisitedFinishNode,
+  init,
+  next,
+} from 'algorithms/dijkstra';
 import getInitialGrid from 'utils/getInitialGrid';
 import { RootState } from 'redux/store';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
@@ -34,6 +40,8 @@ const PathFindingVisualiser = () => {
   const grid: TypeNode[][] = useAppSelector(
     (state: RootState) => state.grid.grid
   );
+
+  const intervalRef = useRef<NodeJS.Timeout>();
 
   const animateShortestPath = (nodesInShortestPathOrder: TypeNode[]) => {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
@@ -132,6 +140,10 @@ const PathFindingVisualiser = () => {
     }
   };
 
+  const start = () => {
+    dispatch(gridSlice.actions.setGrid(init(grid, startNodeX, startNodeY)));
+  };
+
   useEffect(() => {
     const initialGrid = getInitialGrid();
     dispatch(gridSlice.actions.setGrid(initialGrid));
@@ -149,10 +161,24 @@ const PathFindingVisualiser = () => {
     dispatch(gridSlice.actions.setGrid(initialGrid));
   }, [dispatch, numRows, numCols, startNodeX, startNodeY, endNodeX, endNodeY]);
 
+  useEffect(() => {
+    intervalRef.current = setTimeout(() => {
+      const hasVisitedEndNode = hasVisitedFinishNode(grid, endNodeX, endNodeY);
+      const hasNextStep = hasNext(grid);
+      if (!hasVisitedEndNode && hasNextStep) {
+        dispatch(gridSlice.actions.setGrid(next(grid)));
+      } else {
+        if (intervalRef.current !== undefined) {
+          clearInterval(intervalRef.current);
+        }
+      }
+    }, 100);
+  }, [dispatch, endNodeX, endNodeY, grid]);
+
   return (
     <>
       <div className="side-bar">
-        <Button variant="contained" color="primary" onClick={visualiseDijkstra}>
+        <Button variant="contained" color="primary" onClick={start}>
           Just do it
         </Button>
 
