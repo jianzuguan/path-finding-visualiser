@@ -25,6 +25,7 @@ const createNode = (
     ),
     distance: Infinity,
     isVisited: false,
+    isInShortestPath: false,
     previousNode: null,
   };
 };

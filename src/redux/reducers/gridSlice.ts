@@ -4,11 +4,13 @@ import TypeNode from 'types/Node';
 // Define a type for the slice state
 interface gridState {
   grid: TypeNode[][];
+  isSearchCompleted: boolean;
 }
 
 // Define the initial state using that type
 const initialState: gridState = {
   grid: [],
+  isSearchCompleted: false,
 };
 
 export const gridSlice = createSlice({
@@ -19,6 +21,9 @@ export const gridSlice = createSlice({
     setGrid: (state, action: PayloadAction<TypeNode[][]>) => {
       state.grid = action.payload;
     },
+    setIsSearchComplete: (state, action: PayloadAction<boolean>) => {
+      state.isSearchCompleted = action.payload;
+    }
   },
 });
 

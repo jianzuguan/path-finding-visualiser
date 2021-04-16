@@ -153,4 +153,81 @@ export const next = (grid: TypeNode[][]) => {
   return gridClone;
 };
 
+export const initShortestPathTrace = (
+  grid: TypeNode[][],
+  finishNodeX: number,
+  finishNodeY: number
+) => {
+  const currentNode: TypeNode = grid[finishNodeY][finishNodeX];
+  if (currentNode.isVisited) {
+    return [...grid].map((row) =>
+      [...row].map(function (gridNode: TypeNode) {
+        if (gridNode.x === finishNodeX && gridNode.y === finishNodeY) {
+          return { ...gridNode, isInShortestPath: true };
+        }
+        return { ...gridNode };
+      })
+    );
+  }
+
+  return grid;
+};
+
+export const hasNextPathNode = (
+  grid: TypeNode[][],
+  startNodeX: number,
+  startNodeY: number,
+  finishNodeX: number,
+  finishNodeY: number
+) => {
+  // Start from finish node and trace back.
+  let currentNode: TypeNode | null = grid[finishNodeY][finishNodeX];
+
+  while (currentNode?.isInShortestPath) {
+    // Node in shortest path means this node already been traced.
+    const previousNode: TypeNode | null = currentNode.previousNode;
+    if (previousNode === null) return grid;
+    currentNode = grid[previousNode.y][previousNode.x];
+  }
+  // Now the currentNode has not been marked as traced.
+
+  if (!currentNode || !currentNode.previousNode) {
+    return false;
+  }
+
+  const startNode: TypeNode = grid[startNodeY][startNodeX];
+  if (currentNode === startNode) {
+    return false;
+  }
+
+  return true;
+};
+
+export const nextPathNode = (
+  grid: TypeNode[][],
+  finishNodeX: number,
+  finishNodeY: number
+) => {
+  let currentNode: TypeNode | null = grid[finishNodeY][finishNodeX];
+  while (currentNode && currentNode.isInShortestPath) {
+    const previousNode: TypeNode | null = currentNode.previousNode;
+    if (previousNode === null) return grid;
+    currentNode = grid[previousNode.y][previousNode.x];
+  }
+
+  if (currentNode === null) return grid;
+
+  const { x, y } = currentNode;
+  return [...grid].map((row) =>
+    [...row].map(function (gridNode: TypeNode) {
+      if (gridNode.x === x && gridNode.y === y) {
+        const updatedNode = { ...gridNode, isInShortestPath: true };
+        return updatedNode;
+      }
+
+      return { ...gridNode };
+    })
+  );
+};
+
 export default dijkstra;

@@ -8,6 +8,7 @@ interface Props {
 const calculateClassName = (nodeObj: TypeNode) => {
   if (nodeObj.isStart) return 'node node-start';
   if (nodeObj.isEnd) return 'node node-end';
+  if (nodeObj.isInShortestPath) return 'node node-shortest-path'
   if (nodeObj.isVisited) return 'node node-visited';
 
   return 'node';

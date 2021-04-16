@@ -7,9 +7,12 @@ import './index.css';
 import dijkstra, {
   getNodesInShortestPathOrder,
   hasNext,
+  hasNextPathNode,
   hasVisitedFinishNode,
   init,
+  initShortestPathTrace,
   next,
+  nextPathNode,
 } from 'algorithms/dijkstra';
 import getInitialGrid from 'utils/getInitialGrid';
 import { RootState } from 'redux/store';
@@ -39,6 +42,10 @@ const PathFindingVisualiser = () => {
 
   const grid: TypeNode[][] = useAppSelector(
     (state: RootState) => state.grid.grid
+  );
+
+  const isSearchCompleted: boolean = useAppSelector(
+    (state: RootState) => state.grid.isSearchCompleted
   );
 
   const intervalRef = useRef<NodeJS.Timeout>();
@@ -162,18 +169,52 @@ const PathFindingVisualiser = () => {
   }, [dispatch, numRows, numCols, startNodeX, startNodeY, endNodeX, endNodeY]);
 
   useEffect(() => {
-    intervalRef.current = setTimeout(() => {
-      const hasVisitedEndNode = hasVisitedFinishNode(grid, endNodeX, endNodeY);
-      const hasNextStep = hasNext(grid);
-      if (!hasVisitedEndNode && hasNextStep) {
+    if (isSearchCompleted) return;
+
+    const hasVisitedEndNode = hasVisitedFinishNode(grid, endNodeX, endNodeY);
+    const hasNextStep = hasNext(grid);
+
+    if (!hasVisitedEndNode && hasNextStep) {
+      intervalRef.current = setTimeout(() => {
         dispatch(gridSlice.actions.setGrid(next(grid)));
-      } else {
-        if (intervalRef.current !== undefined) {
-          clearInterval(intervalRef.current);
-        }
-      }
-    }, 100);
-  }, [dispatch, endNodeX, endNodeY, grid]);
+      }, 100);
+      return;
+    }
+
+    if (intervalRef.current !== undefined) {
+      clearInterval(intervalRef.current);
+      dispatch(
+        gridSlice.actions.setGrid(
+          initShortestPathTrace(grid, endNodeX, endNodeY)
+        )
+      );
+      dispatch(gridSlice.actions.setIsSearchComplete(true));
+    }
+  }, [dispatch, grid, isSearchCompleted, endNodeX, endNodeY]);
+
+  useEffect(() => {
+    if (!isSearchCompleted) return;
+
+    if (hasNextPathNode(grid, startNodeX, startNodeY, endNodeX, endNodeY)) {
+      intervalRef.current = setTimeout(() => {
+        const nextGrid = nextPathNode(grid, endNodeX, endNodeY);
+        dispatch(gridSlice.actions.setGrid(nextGrid));
+      }, 10);
+      return;
+    }
+
+    if (intervalRef.current !== undefined) {
+      return clearInterval(intervalRef.current);
+    }
+  }, [
+    dispatch,
+    grid,
+    isSearchCompleted,
+    startNodeX,
+    startNodeY,
+    endNodeX,
+    endNodeY,
+  ]);
 
   return (
     <>

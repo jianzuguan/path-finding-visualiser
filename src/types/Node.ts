@@ -6,6 +6,7 @@ interface Node {
   weight: number;
   distance: number;
   isVisited: boolean;
+  isInShortestPath: boolean;
   previousNode: Node | null;
 }
 
