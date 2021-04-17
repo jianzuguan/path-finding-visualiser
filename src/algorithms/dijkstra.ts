@@ -1,15 +1,5 @@
 import TypeNode from 'types/Node';
 
-const getAllNodes = (grid: TypeNode[][]) => {
-  const nodes = [];
-  for (const row of grid) {
-    for (const node of row) {
-      nodes.push(node);
-    }
-  }
-  return nodes;
-};
-
 const getAllUnvisitedNode = (grid: TypeNode[][]) => {
   const unvisitedNodes = [];
   for (const row of grid) {
@@ -50,30 +40,6 @@ const updateUnvisitedNeighbors = (
       neighbor.previousNode = currentNode;
     }
   }
-};
-
-const dijkstra = (
-  grid: TypeNode[][],
-  startNode: TypeNode,
-  finishNode: TypeNode
-) => {
-  const unvisitedNodes = getAllNodes(grid);
-  startNode.distance = 0;
-  const visitedNodesInOrder = [];
-  while (unvisitedNodes.length) {
-    sortNodesByDistance(unvisitedNodes);
-    const closestNode = unvisitedNodes.shift();
-    if (!closestNode) continue;
-    // If the closest node is at a distance of infinity,
-    // we must be trapped and should therefore stop.
-    if (closestNode.distance === Infinity) return visitedNodesInOrder;
-    closestNode.isVisited = true;
-    visitedNodesInOrder.push(closestNode);
-    if (closestNode === finishNode) return visitedNodesInOrder;
-    updateUnvisitedNeighbors(closestNode, grid);
-  }
-
-  return visitedNodesInOrder;
 };
 
 export const getNodesInShortestPathOrder = (endNode: TypeNode) => {
@@ -127,7 +93,6 @@ export const hasNext = (grid: TypeNode[][]) => {
 
   sortNodesByDistance(unvisitedNodes);
   const closestNode = unvisitedNodes.shift();
-  console.log(closestNode);
   // All nodes in grid visited.
   if (!closestNode) return false;
   // All reachable nodes visited.
@@ -229,5 +194,3 @@ export const nextPathNode = (
     })
   );
 };
-
-export default dijkstra;

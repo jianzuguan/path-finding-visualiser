@@ -4,8 +4,7 @@ import TypeNode from 'types/Node';
 import Components from 'components';
 import ControlPanel from 'PathFindingVisualiser/ControlPanel';
 import './index.css';
-import dijkstra, {
-  getNodesInShortestPathOrder,
+import {
   hasNext,
   hasNextPathNode,
   hasVisitedFinishNode,
@@ -50,103 +49,6 @@ const PathFindingVisualiser = () => {
 
   const intervalRef = useRef<NodeJS.Timeout>();
 
-  const animateShortestPath = (nodesInShortestPathOrder: TypeNode[]) => {
-    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-      setTimeout(() => {
-        const node = nodesInShortestPathOrder[i];
-        if (
-          node === null ||
-          (startNodeY === node.y && startNodeX === node.x) ||
-          (endNodeY === node.y && endNodeX === node.x)
-        ) {
-          return;
-        }
-        const domElement = document.getElementById(`node-${node.y}-${node.x}`);
-        if (domElement === null) {
-          return;
-        }
-        domElement.className = 'node node-shortest-path';
-      }, 50 * i);
-    }
-  };
-
-  const animateDijkstra = async (
-    visitedNodesInOrder: TypeNode[],
-    nodesInShortestPathOrder: TypeNode[]
-  ) => {
-    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-      if (i === visitedNodesInOrder.length) {
-        setTimeout(() => {
-          animateShortestPath(nodesInShortestPathOrder);
-        }, 100 * i);
-        return;
-      }
-      setTimeout(() => {
-        const node = visitedNodesInOrder[i];
-        if (
-          node === null ||
-          (startNodeY === node.y && startNodeX === node.x) ||
-          (endNodeY === node.y && endNodeX === node.x)
-        ) {
-          return;
-        }
-        const domElement = document.getElementById(`node-${node.y}-${node.x}`);
-        if (domElement !== null) {
-          domElement.className = 'node node-visited';
-        }
-      }, 100 * i);
-    }
-  };
-
-  const instantResult = async (
-    visitedNodesInOrder: TypeNode[],
-    nodesInShortestPathOrder: TypeNode[]
-  ) => {
-    for (let i = 0; i < visitedNodesInOrder.length; i++) {
-      const node = visitedNodesInOrder[i];
-      if (
-        node === null ||
-        (startNodeY === node.y && startNodeX === node.x) ||
-        (endNodeY === node.y && endNodeX === node.x)
-      ) {
-        continue;
-      }
-      const domElement = document.getElementById(`node-${node.y}-${node.x}`);
-      if (domElement !== null) {
-        domElement.className = 'node node-visited';
-      }
-    }
-    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-      const node = nodesInShortestPathOrder[i];
-      if (
-        node === null ||
-        (startNodeY === node.y && startNodeX === node.x) ||
-        (endNodeY === node.y && endNodeX === node.x)
-      ) {
-        continue;
-      }
-      const domElement = document.getElementById(`node-${node.y}-${node.x}`);
-      if (domElement === null) {
-        continue;
-      }
-      domElement.className = 'node node-shortest-path';
-    }
-  };
-
-  const visualiseDijkstra = () => {
-    if (grid === undefined) return;
-    const startNode = grid[startNodeY][startNodeX];
-    const endNode = grid[endNodeY][endNodeX];
-    const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
-    console.log(visitedNodesInOrder);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
-    if (instantShowResult) {
-      instantResult(visitedNodesInOrder, nodesInShortestPathOrder);
-    } else {
-      animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    }
-  };
-
   const start = () => {
     dispatch(gridSlice.actions.setGrid(init(grid, startNodeX, startNodeY)));
   };
@@ -175,9 +77,10 @@ const PathFindingVisualiser = () => {
     const hasNextStep = hasNext(grid);
 
     if (!hasVisitedEndNode && hasNextStep) {
+      const delay = instantShowResult ? 0 : 1000;
       intervalRef.current = setTimeout(() => {
         dispatch(gridSlice.actions.setGrid(next(grid)));
-      }, 100);
+      }, delay);
       return;
     }
 
@@ -190,16 +93,17 @@ const PathFindingVisualiser = () => {
       );
       dispatch(gridSlice.actions.setIsSearchComplete(true));
     }
-  }, [dispatch, grid, isSearchCompleted, endNodeX, endNodeY]);
+  }, [dispatch, grid, isSearchCompleted, endNodeX, endNodeY, instantShowResult]);
 
   useEffect(() => {
     if (!isSearchCompleted) return;
 
     if (hasNextPathNode(grid, startNodeX, startNodeY, endNodeX, endNodeY)) {
+      const delay = instantShowResult ? 0 : 10;
       intervalRef.current = setTimeout(() => {
         const nextGrid = nextPathNode(grid, endNodeX, endNodeY);
         dispatch(gridSlice.actions.setGrid(nextGrid));
-      }, 10);
+      }, delay);
       return;
     }
 
@@ -214,6 +118,7 @@ const PathFindingVisualiser = () => {
     startNodeY,
     endNodeX,
     endNodeY,
+    instantShowResult
   ]);
 
   return (
