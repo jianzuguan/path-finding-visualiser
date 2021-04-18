@@ -1,227 +1,161 @@
-import { useEffect, useState } from 'react';
-import {
-  Checkbox,
-  Button,
-  FormControlLabel,
-  TextField,
-} from '@material-ui/core';
+import { useEffect, useRef } from 'react';
+import { Button } from '@material-ui/core';
 import TypeNode from 'types/Node';
 import Components from 'components';
-import dijkstra, { getNodesInShortestPathOrder } from 'algorithms/dijkstra';
+import ControlPanel from 'PathFindingVisualiser/ControlPanel';
 import './index.css';
 import {
-  NUM_ROWS,
-  NUM_COLS,
-  START_NODE_ROW,
-  START_NODE_COL,
-  END_NODE_ROW,
-  END_NODE_COL,
-} from 'utils/controlParams';
+  hasNext,
+  hasNextPathNode,
+  hasVisitedFinishNode,
+  init,
+  initShortestPathTrace,
+  next,
+  nextPathNode,
+} from 'algorithms/dijkstra';
 import getInitialGrid from 'utils/getInitialGrid';
+import { RootState } from 'redux/store';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { gridSlice } from 'redux/reducers/gridSlice';
 
 const PathFindingVisualiser = () => {
-  const [numRows, setNumRows] = useState(NUM_ROWS);
-  const [numCols, setNumCols] = useState(NUM_COLS);
-  const [startNodeRow, setStartNodeRow] = useState(START_NODE_ROW);
-  const [startNodeCol, setStartNodeCol] = useState(START_NODE_COL);
-  const [endNodeRow, setEndNodeRow] = useState(END_NODE_ROW);
-  const [endNodeCol, setEndNodeCol] = useState(END_NODE_COL);
-  const [instantShowResult, setInstantShowResult] = useState(true);
+  const dispatch = useAppDispatch();
 
-  const [grid, setGrid] = useState<TypeNode[][]>();
+  const instantShowResult = useAppSelector(
+    (state: RootState) => state.controls.instantShowResult
+  );
+  const numRows = useAppSelector((state: RootState) => state.controls.numRows);
+  const numCols = useAppSelector((state: RootState) => state.controls.numCols);
+  const startNodeX = useAppSelector(
+    (state: RootState) => state.controls.startNodeX
+  );
+  const startNodeY = useAppSelector(
+    (state: RootState) => state.controls.startNodeY
+  );
+  const finishNodeX = useAppSelector(
+    (state: RootState) => state.controls.finishNodeX
+  );
+  const finishNodeY = useAppSelector(
+    (state: RootState) => state.controls.finishNodeY
+  );
 
-  const animateShortestPath = (nodesInShortestPathOrder: TypeNode[]) => {
-    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-      setTimeout(() => {
-        const node = nodesInShortestPathOrder[i];
-        if (
-          node === null ||
-          (startNodeRow === node.row && startNodeCol === node.col) ||
-          (endNodeRow === node.row && endNodeCol === node.col)
-        ) {
-          return;
-        }
-        const domElement = document.getElementById(
-          `node-${node.row}-${node.col}`
-        );
-        if (domElement === null) {
-          return;
-        }
-        domElement.className = 'node node-shortest-path';
-      }, 50 * i);
+  const grid: TypeNode[][] = useAppSelector(
+    (state: RootState) => state.grid.grid
+  );
+
+  const isSearching: boolean = useAppSelector(
+    (state: RootState) => state.grid.isSearching
+  );
+  const isTracing: boolean = useAppSelector(
+    (state: RootState) => state.grid.isTracing
+  );
+
+  const intervalRef = useRef<NodeJS.Timeout>();
+
+  const start = () => {
+    if (!instantShowResult) {
+      dispatch(gridSlice.actions.setGrid(init(grid, startNodeX, startNodeY)));
+      dispatch(gridSlice.actions.setIsSearching(true));
+      return;
     }
+
+    let currentGrid = init(grid, startNodeX, startNodeY);
+    while (
+      !hasVisitedFinishNode(currentGrid, finishNodeX, finishNodeY) &&
+      hasNext(currentGrid)
+    ) {
+      currentGrid = next(currentGrid);
+    }
+    currentGrid = initShortestPathTrace(currentGrid, finishNodeX, finishNodeY);
+    while (hasNextPathNode(currentGrid, startNodeX, startNodeY, finishNodeX, finishNodeY)) {
+      currentGrid = nextPathNode(currentGrid, finishNodeX, finishNodeY);
+    }
+
+    dispatch(gridSlice.actions.setGrid(currentGrid));
   };
 
-  const animateDijkstra = async (
-    visitedNodesInOrder: TypeNode[],
-    nodesInShortestPathOrder: TypeNode[]
-  ) => {
-    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-      if (i === visitedNodesInOrder.length) {
-        setTimeout(() => {
-          animateShortestPath(nodesInShortestPathOrder);
-        }, 100 * i);
-        return;
-      }
-      setTimeout(() => {
-        const node = visitedNodesInOrder[i];
-        if (
-          node === null ||
-          (startNodeRow === node.row && startNodeCol === node.col) ||
-          (endNodeRow === node.row && endNodeCol === node.col)
-        ) {
-          return;
-        }
-        const domElement = document.getElementById(
-          `node-${node.row}-${node.col}`
-        );
-        if (domElement !== null) {
-          domElement.className = 'node node-visited';
-        }
-      }, 100 * i);
-    }
-  };
-
-  const instantResult = async (
-    visitedNodesInOrder: TypeNode[],
-    nodesInShortestPathOrder: TypeNode[]
-  ) => {
-    for (let i = 0; i < visitedNodesInOrder.length; i++) {
-      const node = visitedNodesInOrder[i];
-      if (
-        node === null ||
-        (startNodeRow === node.row && startNodeCol === node.col) ||
-        (endNodeRow === node.row && endNodeCol === node.col)
-      ) {
-        continue;
-      }
-      const domElement = document.getElementById(
-        `node-${node.row}-${node.col}`
-      );
-      if (domElement !== null) {
-        domElement.className = 'node node-visited';
-      }
-    }
-    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-      const node = nodesInShortestPathOrder[i];
-      if (
-        node === null ||
-        (startNodeRow === node.row && startNodeCol === node.col) ||
-        (endNodeRow === node.row && endNodeCol === node.col)
-      ) {
-        continue;
-      }
-      const domElement = document.getElementById(
-        `node-${node.row}-${node.col}`
-      );
-      if (domElement === null) {
-        continue;
-      }
-      domElement.className = 'node node-shortest-path';
-    }
-  };
-
-  const visualiseDijkstra = () => {
-    if (grid === undefined) return;
-    const startNode = grid[startNodeRow][startNodeCol];
-    const endNode = grid[endNodeRow][endNodeCol];
-    const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
-    console.log(visitedNodesInOrder);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
-    if (instantShowResult) {
-      instantResult(visitedNodesInOrder, nodesInShortestPathOrder);
-    } else {
-      animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    }
-  };
-
+  // Page loaded and generate a grid.
   useEffect(() => {
     const initialGrid = getInitialGrid();
-    setGrid(initialGrid);
-  }, []);
+    dispatch(gridSlice.actions.setGrid(initialGrid));
+  }, [dispatch]);
 
+  // Reset and regenerate the grid.
   useEffect(() => {
     const initialGrid = getInitialGrid(
       numRows,
       numCols,
-      startNodeRow,
-      startNodeCol,
-      endNodeRow,
-      endNodeCol
+      startNodeX,
+      startNodeY,
+      finishNodeX,
+      finishNodeY
     );
-    setGrid(initialGrid);
-  }, [numRows, numCols, startNodeRow, startNodeCol, endNodeRow, endNodeCol]);
+    dispatch(gridSlice.actions.setIsSearching(false));
+    dispatch(gridSlice.actions.setIsTracing(false));
+    dispatch(gridSlice.actions.setGrid(initialGrid));
+  }, [dispatch, numRows, numCols, startNodeX, startNodeY, finishNodeX, finishNodeY]);
+
+  // Searching for the finish node.
+  useEffect(() => {
+    if (!isSearching) return;
+
+    const hasFinishSearching = hasVisitedFinishNode(grid, finishNodeX, finishNodeY);
+    const hasNextStep = hasNext(grid);
+
+    if (!hasFinishSearching && hasNextStep) {
+      intervalRef.current = setTimeout(() => {
+        dispatch(gridSlice.actions.setGrid(next(grid)));
+      }, 10);
+      return;
+    }
+
+    if (intervalRef.current !== undefined) {
+      clearInterval(intervalRef.current);
+      dispatch(
+        gridSlice.actions.setGrid(
+          initShortestPathTrace(grid, finishNodeX, finishNodeY)
+        )
+      );
+      dispatch(gridSlice.actions.setIsSearching(false));
+      dispatch(gridSlice.actions.setIsTracing(true));
+    }
+  }, [dispatch, grid, isSearching, finishNodeX, finishNodeY]);
+
+  // Finish node found, trace back to start node.
+  useEffect(() => {
+    if (!isTracing) return;
+
+    if (hasNextPathNode(grid, startNodeX, startNodeY, finishNodeX, finishNodeY)) {
+      intervalRef.current = setTimeout(() => {
+        const nextGrid = nextPathNode(grid, finishNodeX, finishNodeY);
+        dispatch(gridSlice.actions.setGrid(nextGrid));
+      }, 1);
+      return;
+    }
+
+    if (intervalRef.current !== undefined) {
+      clearInterval(intervalRef.current);
+      dispatch(gridSlice.actions.setIsTracing(false));
+      return ;
+    }
+  }, [
+    dispatch,
+    grid,
+    isTracing,
+    startNodeX,
+    startNodeY,
+    finishNodeX,
+    finishNodeY,
+  ]);
 
   return (
     <>
       <div className="side-bar">
-        <Button variant="contained" color="primary" onClick={visualiseDijkstra}>
+        <Button variant="contained" color="primary" onClick={start}>
           Just do it
         </Button>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={instantShowResult}
-              onChange={(e) => setInstantShowResult(e.target.checked)}
-              name="instant-show-result-checkbox"
-              color="primary"
-            />
-          }
-          label="Instant show result"
-        />
-        <TextField
-          variant="outlined"
-          type="number"
-          id="number-of-rows-text-field"
-          label="Number of Rows"
-          value={numRows}
-          onChange={(e) => setNumRows(Number(e.target.value) || NUM_ROWS)}
-        />
 
-        <TextField
-          variant="outlined"
-          type="number"
-          id="number-of-cols-text-field"
-          label="Number of col"
-          value={numCols}
-          onChange={(e) => setNumCols(Number(e.target.value) || NUM_COLS)}
-        />
-
-        <TextField
-          variant="outlined"
-          type="number"
-          id="start-node-row-text-field"
-          label="Start Node Row"
-          value={startNodeRow}
-          onChange={(e) => setStartNodeRow(Number(e.target.value) || 1)}
-        />
-
-        <TextField
-          variant="outlined"
-          type="number"
-          id="start-node-col-text-field"
-          label="Start Node Col"
-          value={startNodeCol}
-          onChange={(e) => setStartNodeCol(Number(e.target.value) || 1)}
-        />
-
-        <TextField
-          variant="outlined"
-          type="number"
-          id="end-node-row-text-field"
-          label="End Node Row"
-          value={endNodeRow}
-          onChange={(e) => setEndNodeRow(Number(e.target.value) || 1)}
-        />
-
-        <TextField
-          variant="outlined"
-          type="number"
-          id="end-node-col-text-field"
-          label="End Node Col"
-          value={endNodeCol}
-          onChange={(e) => setEndNodeCol(Number(e.target.value) || 1)}
-        />
+        <ControlPanel />
       </div>
       <div className="grid">
         {grid?.map((row, rowIndex) => {

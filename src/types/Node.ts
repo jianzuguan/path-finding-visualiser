@@ -1,11 +1,12 @@
 interface Node {
-  col: number;
-  row: number;
+  x: number;
+  y: number;
   isStart: boolean;
-  isEnd: boolean;
+  isFinish: boolean;
   weight: number;
   distance: number;
   isVisited: boolean;
+  isInShortestPath: boolean;
   previousNode: Node | null;
 }
 
