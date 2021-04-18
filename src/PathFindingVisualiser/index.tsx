@@ -32,11 +32,11 @@ const PathFindingVisualiser = () => {
   const startNodeY = useAppSelector(
     (state: RootState) => state.controls.startNodeY
   );
-  const endNodeX = useAppSelector(
-    (state: RootState) => state.controls.endNodeX
+  const finishNodeX = useAppSelector(
+    (state: RootState) => state.controls.finishNodeX
   );
-  const endNodeY = useAppSelector(
-    (state: RootState) => state.controls.endNodeY
+  const finishNodeY = useAppSelector(
+    (state: RootState) => state.controls.finishNodeY
   );
 
   const grid: TypeNode[][] = useAppSelector(
@@ -61,14 +61,14 @@ const PathFindingVisualiser = () => {
 
     let currentGrid = init(grid, startNodeX, startNodeY);
     while (
-      !hasVisitedFinishNode(currentGrid, endNodeX, endNodeY) &&
+      !hasVisitedFinishNode(currentGrid, finishNodeX, finishNodeY) &&
       hasNext(currentGrid)
     ) {
       currentGrid = next(currentGrid);
     }
-    currentGrid = initShortestPathTrace(currentGrid, endNodeX, endNodeY);
-    while (hasNextPathNode(currentGrid, startNodeX, startNodeY, endNodeX, endNodeY)) {
-      currentGrid = nextPathNode(currentGrid, endNodeX, endNodeY);
+    currentGrid = initShortestPathTrace(currentGrid, finishNodeX, finishNodeY);
+    while (hasNextPathNode(currentGrid, startNodeX, startNodeY, finishNodeX, finishNodeY)) {
+      currentGrid = nextPathNode(currentGrid, finishNodeX, finishNodeY);
     }
 
     dispatch(gridSlice.actions.setGrid(currentGrid));
@@ -87,22 +87,22 @@ const PathFindingVisualiser = () => {
       numCols,
       startNodeX,
       startNodeY,
-      endNodeX,
-      endNodeY
+      finishNodeX,
+      finishNodeY
     );
     dispatch(gridSlice.actions.setIsSearching(false));
     dispatch(gridSlice.actions.setIsTracing(false));
     dispatch(gridSlice.actions.setGrid(initialGrid));
-  }, [dispatch, numRows, numCols, startNodeX, startNodeY, endNodeX, endNodeY]);
+  }, [dispatch, numRows, numCols, startNodeX, startNodeY, finishNodeX, finishNodeY]);
 
   // Searching for the finish node.
   useEffect(() => {
     if (!isSearching) return;
 
-    const hasVisitedEndNode = hasVisitedFinishNode(grid, endNodeX, endNodeY);
+    const hasFinishSearching = hasVisitedFinishNode(grid, finishNodeX, finishNodeY);
     const hasNextStep = hasNext(grid);
 
-    if (!hasVisitedEndNode && hasNextStep) {
+    if (!hasFinishSearching && hasNextStep) {
       intervalRef.current = setTimeout(() => {
         dispatch(gridSlice.actions.setGrid(next(grid)));
       }, 10);
@@ -113,21 +113,21 @@ const PathFindingVisualiser = () => {
       clearInterval(intervalRef.current);
       dispatch(
         gridSlice.actions.setGrid(
-          initShortestPathTrace(grid, endNodeX, endNodeY)
+          initShortestPathTrace(grid, finishNodeX, finishNodeY)
         )
       );
       dispatch(gridSlice.actions.setIsSearching(false));
       dispatch(gridSlice.actions.setIsTracing(true));
     }
-  }, [dispatch, grid, isSearching, endNodeX, endNodeY]);
+  }, [dispatch, grid, isSearching, finishNodeX, finishNodeY]);
 
   // Finish node found, trace back to start node.
   useEffect(() => {
     if (!isTracing) return;
 
-    if (hasNextPathNode(grid, startNodeX, startNodeY, endNodeX, endNodeY)) {
+    if (hasNextPathNode(grid, startNodeX, startNodeY, finishNodeX, finishNodeY)) {
       intervalRef.current = setTimeout(() => {
-        const nextGrid = nextPathNode(grid, endNodeX, endNodeY);
+        const nextGrid = nextPathNode(grid, finishNodeX, finishNodeY);
         dispatch(gridSlice.actions.setGrid(nextGrid));
       }, 1);
       return;
@@ -144,8 +144,8 @@ const PathFindingVisualiser = () => {
     isTracing,
     startNodeX,
     startNodeY,
-    endNodeX,
-    endNodeY,
+    finishNodeX,
+    finishNodeY,
   ]);
 
   return (

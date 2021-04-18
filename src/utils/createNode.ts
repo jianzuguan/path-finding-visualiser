@@ -11,15 +11,15 @@ const createNode = (
   y: number,
   startNodeX: number,
   startNodeY: number,
-  endNodeX: number,
-  endNodeY: number,
+  finishNodeX: number,
+  finishNodeY: number,
   useNoise: boolean = true
 ): TypeNode => {
   return {
     x,
     y,
     isStart: startNodeX === x && startNodeY === y,
-    isEnd: endNodeX === x && endNodeY === y,
+    isFinish: finishNodeX === x && finishNodeY === y,
     weight: useNoise
       ? noise(x * NOISE_ZOOM + NOISE_OFFSET_X, y * NOISE_ZOOM + NOISE_OFFSET_Y)
       : 1,

@@ -7,8 +7,8 @@ interface controlsState {
   numCols: number;
   startNodeX: number;
   startNodeY: number;
-  endNodeX: number;
-  endNodeY: number;
+  finishNodeX: number;
+  finishNodeY: number;
   noiseOffsetX: number;
   noiseOffsetY: number;
   instantShowResult: boolean;
@@ -20,8 +20,8 @@ const initialState: controlsState = {
   numCols: controlsParams.NUM_COLS,
   startNodeX: controlsParams.START_NODE_X,
   startNodeY: controlsParams.START_NODE_Y,
-  endNodeX: controlsParams.END_NODE_X,
-  endNodeY: controlsParams.END_NODE_Y,
+  finishNodeX: controlsParams.FINISH_NODE_X,
+  finishNodeY: controlsParams.FINISH_NODE_Y,
   noiseOffsetX: controlsParams.NOISE_OFFSET_X,
   noiseOffsetY: controlsParams.NOISE_OFFSET_Y,
   instantShowResult: true,
@@ -45,11 +45,11 @@ export const controlsSlice = createSlice({
     setStartNodeY: (state, action: PayloadAction<number>) => {
       state.startNodeY = action.payload;
     },
-    setEndNodeX: (state, action: PayloadAction<number>) => {
-      state.endNodeX = action.payload;
+    setFinishNodeX: (state, action: PayloadAction<number>) => {
+      state.finishNodeX = action.payload;
     },
-    setEndNodeY: (state, action: PayloadAction<number>) => {
-      state.endNodeY = action.payload;
+    setFinishNodeY: (state, action: PayloadAction<number>) => {
+      state.finishNodeY = action.payload;
     },
     setNoiseOffsetX: (state, action: PayloadAction<number>) => {
       state.noiseOffsetX = action.payload;

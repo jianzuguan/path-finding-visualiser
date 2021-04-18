@@ -3,8 +3,8 @@ import {
   NUM_COLS,
   START_NODE_Y,
   START_NODE_X,
-  END_NODE_Y,
-  END_NODE_X,
+  FINISH_NODE_Y,
+  FINISH_NODE_X,
 } from 'utils/controlParams';
 import TypeNode from 'types/Node';
 import createNode from 'utils/createNode';
@@ -14,15 +14,15 @@ const getInitialGrid = (
   numCols = NUM_COLS,
   startNodeX = START_NODE_X,
   startNodeY = START_NODE_Y,
-  endNodeX = END_NODE_X,
-  endNodeY = END_NODE_Y
+  finishNodeX = FINISH_NODE_X,
+  finishNodeY = FINISH_NODE_Y
 ) => {
   const grid: TypeNode[][] = [];
   for (let row = 0; row < numRows; row++) {
     const currentRow = [];
     for (let col = 0; col < numCols; col++) {
       currentRow.push(
-        createNode(col, row, startNodeX, startNodeY, endNodeX, endNodeY)
+        createNode(col, row, startNodeX, startNodeY, finishNodeX, finishNodeY)
       );
     }
     grid.push(currentRow);

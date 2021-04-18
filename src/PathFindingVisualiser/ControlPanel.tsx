@@ -18,11 +18,11 @@ const ControlPanel = () => {
   const startNodeY = useAppSelector(
     (state: RootState) => state.controls.startNodeY
   );
-  const endNodeX = useAppSelector(
-    (state: RootState) => state.controls.endNodeX
+  const finishNodeX = useAppSelector(
+    (state: RootState) => state.controls.finishNodeX
   );
-  const endNodeY = useAppSelector(
-    (state: RootState) => state.controls.endNodeY
+  const finishNodeY = useAppSelector(
+    (state: RootState) => state.controls.finishNodeY
   );
 
   return (
@@ -98,11 +98,11 @@ const ControlPanel = () => {
         variant="outlined"
         type="number"
         id="end-node-row-text-field"
-        label="End Node Row"
-        value={endNodeY}
+        label="Finish Node Row"
+        value={finishNodeY}
         onChange={(e) =>
           dispatch(
-            controlsSlice.actions.setEndNodeY(Number(e.target.value) || 1)
+            controlsSlice.actions.setFinishNodeY(Number(e.target.value) || 1)
           )
         }
       />
@@ -111,11 +111,11 @@ const ControlPanel = () => {
         variant="outlined"
         type="number"
         id="end-node-col-text-field"
-        label="End Node Col"
-        value={endNodeX}
+        label="Finish Node Col"
+        value={finishNodeX}
         onChange={(e) =>
           dispatch(
-            controlsSlice.actions.setEndNodeX(Number(e.target.value) || 1)
+            controlsSlice.actions.setFinishNodeX(Number(e.target.value) || 1)
           )
         }
       />

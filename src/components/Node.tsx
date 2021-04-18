@@ -7,15 +7,15 @@ interface Props {
 
 const calculateClassName = (nodeObj: TypeNode) => {
   if (nodeObj.isStart) return 'node node-start';
-  if (nodeObj.isEnd) return 'node node-end';
-  if (nodeObj.isInShortestPath) return 'node node-shortest-path'
+  if (nodeObj.isFinish) return 'node node-finish';
+  if (nodeObj.isInShortestPath) return 'node node-shortest-path';
   if (nodeObj.isVisited) return 'node node-visited';
 
   return 'node';
 };
 
 const Node = (props: Props) => {
-  const { y: row, x: col, isStart, isEnd, weight } = props.nodeObj;
+  const { y: row, x: col, weight } = props.nodeObj;
 
   const colourStyle = calculateClassName(props.nodeObj);
 

@@ -42,9 +42,9 @@ const updateUnvisitedNeighbors = (
   }
 };
 
-export const getNodesInShortestPathOrder = (endNode: TypeNode) => {
+export const getNodesInShortestPathOrder = (finishNode: TypeNode) => {
   const nodesInShortestPathOrder = [];
-  let currentNode: TypeNode | null = endNode;
+  let currentNode: TypeNode | null = finishNode;
   while (currentNode !== null) {
     nodesInShortestPathOrder.push(currentNode);
     currentNode = currentNode.previousNode;
