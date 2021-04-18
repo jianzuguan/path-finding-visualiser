@@ -43,21 +43,44 @@ const PathFindingVisualiser = () => {
     (state: RootState) => state.grid.grid
   );
 
-  const isSearchCompleted: boolean = useAppSelector(
-    (state: RootState) => state.grid.isSearchCompleted
+  const isSearching: boolean = useAppSelector(
+    (state: RootState) => state.grid.isSearching
+  );
+  const isTracing: boolean = useAppSelector(
+    (state: RootState) => state.grid.isTracing
   );
 
   const intervalRef = useRef<NodeJS.Timeout>();
 
   const start = () => {
-    dispatch(gridSlice.actions.setGrid(init(grid, startNodeX, startNodeY)));
+    if (!instantShowResult) {
+      dispatch(gridSlice.actions.setGrid(init(grid, startNodeX, startNodeY)));
+      dispatch(gridSlice.actions.setIsSearching(true));
+      return;
+    }
+
+    let currentGrid = init(grid, startNodeX, startNodeY);
+    while (
+      !hasVisitedFinishNode(currentGrid, endNodeX, endNodeY) &&
+      hasNext(currentGrid)
+    ) {
+      currentGrid = next(currentGrid);
+    }
+    currentGrid = initShortestPathTrace(currentGrid, endNodeX, endNodeY);
+    while (hasNextPathNode(currentGrid, startNodeX, startNodeY, endNodeX, endNodeY)) {
+      currentGrid = nextPathNode(currentGrid, endNodeX, endNodeY);
+    }
+
+    dispatch(gridSlice.actions.setGrid(currentGrid));
   };
 
+  // Page loaded and generate a grid.
   useEffect(() => {
     const initialGrid = getInitialGrid();
     dispatch(gridSlice.actions.setGrid(initialGrid));
   }, [dispatch]);
 
+  // Reset and regenerate the grid.
   useEffect(() => {
     const initialGrid = getInitialGrid(
       numRows,
@@ -67,20 +90,22 @@ const PathFindingVisualiser = () => {
       endNodeX,
       endNodeY
     );
+    dispatch(gridSlice.actions.setIsSearching(false));
+    dispatch(gridSlice.actions.setIsTracing(false));
     dispatch(gridSlice.actions.setGrid(initialGrid));
   }, [dispatch, numRows, numCols, startNodeX, startNodeY, endNodeX, endNodeY]);
 
+  // Searching for the finish node.
   useEffect(() => {
-    if (isSearchCompleted) return;
+    if (!isSearching) return;
 
     const hasVisitedEndNode = hasVisitedFinishNode(grid, endNodeX, endNodeY);
     const hasNextStep = hasNext(grid);
 
     if (!hasVisitedEndNode && hasNextStep) {
-      const delay = instantShowResult ? 0 : 1000;
       intervalRef.current = setTimeout(() => {
         dispatch(gridSlice.actions.setGrid(next(grid)));
-      }, delay);
+      }, 10);
       return;
     }
 
@@ -91,34 +116,36 @@ const PathFindingVisualiser = () => {
           initShortestPathTrace(grid, endNodeX, endNodeY)
         )
       );
-      dispatch(gridSlice.actions.setIsSearchComplete(true));
+      dispatch(gridSlice.actions.setIsSearching(false));
+      dispatch(gridSlice.actions.setIsTracing(true));
     }
-  }, [dispatch, grid, isSearchCompleted, endNodeX, endNodeY, instantShowResult]);
+  }, [dispatch, grid, isSearching, endNodeX, endNodeY]);
 
+  // Finish node found, trace back to start node.
   useEffect(() => {
-    if (!isSearchCompleted) return;
+    if (!isTracing) return;
 
     if (hasNextPathNode(grid, startNodeX, startNodeY, endNodeX, endNodeY)) {
-      const delay = instantShowResult ? 0 : 10;
       intervalRef.current = setTimeout(() => {
         const nextGrid = nextPathNode(grid, endNodeX, endNodeY);
         dispatch(gridSlice.actions.setGrid(nextGrid));
-      }, delay);
+      }, 1);
       return;
     }
 
     if (intervalRef.current !== undefined) {
-      return clearInterval(intervalRef.current);
+      clearInterval(intervalRef.current);
+      dispatch(gridSlice.actions.setIsTracing(false));
+      return ;
     }
   }, [
     dispatch,
     grid,
-    isSearchCompleted,
+    isTracing,
     startNodeX,
     startNodeY,
     endNodeX,
     endNodeY,
-    instantShowResult
   ]);
 
   return (
