@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/path-finding-visualiser/static/css/main.66e557cd.chunk.css",
-    "main.js": "/path-finding-visualiser/static/js/main.8a2d634a.chunk.js",
-    "main.js.map": "/path-finding-visualiser/static/js/main.8a2d634a.chunk.js.map",
-    "runtime-main.js": "/path-finding-visualiser/static/js/runtime-main.ac1c1c55.js",
-    "runtime-main.js.map": "/path-finding-visualiser/static/js/runtime-main.ac1c1c55.js.map",
-    "static/js/2.27c5e643.chunk.js": "/path-finding-visualiser/static/js/2.27c5e643.chunk.js",
-    "static/js/2.27c5e643.chunk.js.map": "/path-finding-visualiser/static/js/2.27c5e643.chunk.js.map",
-    "static/js/3.8c1bfc79.chunk.js": "/path-finding-visualiser/static/js/3.8c1bfc79.chunk.js",
-    "static/js/3.8c1bfc79.chunk.js.map": "/path-finding-visualiser/static/js/3.8c1bfc79.chunk.js.map",
+    "main.css": "/path-finding-visualiser/static/css/main.5831744d.chunk.css",
+    "main.js": "/path-finding-visualiser/static/js/main.f7cb2457.chunk.js",
+    "main.js.map": "/path-finding-visualiser/static/js/main.f7cb2457.chunk.js.map",
+    "runtime-main.js": "/path-finding-visualiser/static/js/runtime-main.0f945833.js",
+    "runtime-main.js.map": "/path-finding-visualiser/static/js/runtime-main.0f945833.js.map",
+    "static/js/2.a6e0ba94.chunk.js": "/path-finding-visualiser/static/js/2.a6e0ba94.chunk.js",
+    "static/js/2.a6e0ba94.chunk.js.map": "/path-finding-visualiser/static/js/2.a6e0ba94.chunk.js.map",
+    "static/js/3.2f54a7f4.chunk.js": "/path-finding-visualiser/static/js/3.2f54a7f4.chunk.js",
+    "static/js/3.2f54a7f4.chunk.js.map": "/path-finding-visualiser/static/js/3.2f54a7f4.chunk.js.map",
     "index.html": "/path-finding-visualiser/index.html",
-    "static/css/main.66e557cd.chunk.css.map": "/path-finding-visualiser/static/css/main.66e557cd.chunk.css.map",
-    "static/js/2.27c5e643.chunk.js.LICENSE.txt": "/path-finding-visualiser/static/js/2.27c5e643.chunk.js.LICENSE.txt"
+    "static/css/main.5831744d.chunk.css.map": "/path-finding-visualiser/static/css/main.5831744d.chunk.css.map",
+    "static/js/2.a6e0ba94.chunk.js.LICENSE.txt": "/path-finding-visualiser/static/js/2.a6e0ba94.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.ac1c1c55.js",
-    "static/js/2.27c5e643.chunk.js",
-    "static/css/main.66e557cd.chunk.css",
-    "static/js/main.8a2d634a.chunk.js"
+    "static/js/runtime-main.0f945833.js",
+    "static/js/2.a6e0ba94.chunk.js",
+    "static/css/main.5831744d.chunk.css",
+    "static/js/main.f7cb2457.chunk.js"
   ]
 }
