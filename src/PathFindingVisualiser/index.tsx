@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { Button } from '@material-ui/core';
 import TypeNode from 'types/Node';
 import Components from 'components';
 import ControlPanel from 'PathFindingVisualiser/ControlPanel';
@@ -67,7 +66,15 @@ const PathFindingVisualiser = () => {
       currentGrid = next(currentGrid);
     }
     currentGrid = initShortestPathTrace(currentGrid, finishNodeX, finishNodeY);
-    while (hasNextPathNode(currentGrid, startNodeX, startNodeY, finishNodeX, finishNodeY)) {
+    while (
+      hasNextPathNode(
+        currentGrid,
+        startNodeX,
+        startNodeY,
+        finishNodeX,
+        finishNodeY,
+      )
+    ) {
       currentGrid = nextPathNode(currentGrid, finishNodeX, finishNodeY);
     }
 
@@ -93,13 +100,25 @@ const PathFindingVisualiser = () => {
     dispatch(gridSlice.actions.setIsSearching(false));
     dispatch(gridSlice.actions.setIsTracing(false));
     dispatch(gridSlice.actions.setGrid(initialGrid));
-  }, [dispatch, numRows, numCols, startNodeX, startNodeY, finishNodeX, finishNodeY]);
+  }, [
+    dispatch,
+    numRows,
+    numCols,
+    startNodeX,
+    startNodeY,
+    finishNodeX,
+    finishNodeY,
+  ]);
 
   // Searching for the finish node.
   useEffect(() => {
     if (!isSearching) return;
 
-    const hasFinishSearching = hasVisitedFinishNode(grid, finishNodeX, finishNodeY);
+    const hasFinishSearching = hasVisitedFinishNode(
+      grid,
+      finishNodeX,
+      finishNodeY
+    );
     const hasNextStep = hasNext(grid);
 
     if (!hasFinishSearching && hasNextStep) {
@@ -125,7 +144,9 @@ const PathFindingVisualiser = () => {
   useEffect(() => {
     if (!isTracing) return;
 
-    if (hasNextPathNode(grid, startNodeX, startNodeY, finishNodeX, finishNodeY)) {
+    if (
+      hasNextPathNode(grid, startNodeX, startNodeY, finishNodeX, finishNodeY)
+    ) {
       intervalRef.current = setTimeout(() => {
         const nextGrid = nextPathNode(grid, finishNodeX, finishNodeY);
         dispatch(gridSlice.actions.setGrid(nextGrid));
@@ -136,7 +157,7 @@ const PathFindingVisualiser = () => {
     if (intervalRef.current !== undefined) {
       clearInterval(intervalRef.current);
       dispatch(gridSlice.actions.setIsTracing(false));
-      return ;
+      return;
     }
   }, [
     dispatch,
@@ -150,13 +171,7 @@ const PathFindingVisualiser = () => {
 
   return (
     <>
-      <div className="side-bar">
-        <Button variant="contained" color="primary" onClick={start}>
-          Just do it
-        </Button>
-
-        <ControlPanel />
-      </div>
+      <ControlPanel start={start} />
       <div className="grid">
         {grid?.map((row, rowIndex) => {
           return (
